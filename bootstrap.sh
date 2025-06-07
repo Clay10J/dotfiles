@@ -20,13 +20,13 @@ fi
 # 1.5) Create a development workspace hierarchy
 WORKSPACE="$HOME/workspace"
 mkdir -p \
-  "WORKSPACE/archive" \
-  "WORKSPACE/config" \
+  "$WORKSPACE/archive" \
+  "$WORKSPACE/config" \
   "$WORKSPACE/contrib" \
-  "WORKSPACE/notes" \
-  "WORKSPACE/projects" \
+  "$WORKSPACE/notes" \
+  "$WORKSPACE/projects" \
   "$WORKSPACE/sandbox" \
-  "WORKSPACE/scripts" \
+  "$WORKSPACE/scripts" \
   "$WORKSPACE/tools"
 echo "🗂️  Created workspace: $WORKSPACE/{archive,config,contrib,notes,projects,sanebox,scripts,tools}"
 
