@@ -28,7 +28,7 @@ mkdir -p \
   "$WORKSPACE/sandbox" \
   "WORKSPACE/scripts" \
   "$WORKSPACE/tools"
-echo "🗂️  Created workspace at $WORKSPACE with subfolders: tools, sandbox, contrib"
+echo "🗂️  Created workspace: $WORKSPACE/{archive,config,contrib,notes,projects,sanebox,scripts,tools}"
 
 # 2) Ensure local bin on PATH
 export PATH="$HOME/.local/bin:$PATH"
