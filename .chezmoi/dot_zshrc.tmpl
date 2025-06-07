@@ -1,0 +1,15 @@
+export PATH="$HOME/.local/bin:$PATH"
+
+# UV completion
+if command -v uv &>/dev/null; then
+  eval "$(uv completion zsh)"
+fi
+
+# 1Password CLI integration
+if command -v op &>/dev/null; then
+  eval "$(op completion zsh)"
+  if [ -t 1 ] && ! op whoami &>/dev/null; then
+    eval "$(op signin)"
+  fi
+fi
+

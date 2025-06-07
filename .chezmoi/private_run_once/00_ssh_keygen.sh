@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+KEY="$HOME/.ssh/id_ed25519"
+[ -f "$KEY" ] && exit 0
+mkdir -p "$HOME/.ssh"
+ssh-keygen -t ed25519 -f "$KEY" -N "" -C "clay@$(hostname)"
+echo "🔑 Generated SSH key at $KEY. Add its .pub to GitHub!"
