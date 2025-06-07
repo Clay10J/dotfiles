@@ -17,6 +17,19 @@ else
   exit 1
 fi
 
+# 1.5) Create a development workspace hierarchy
+WORKSPACE="$HOME/workspace"
+mkdir -p \
+  "WORKSPACE/archive" \
+  "WORKSPACE/config" \
+  "$WORKSPACE/contrib" \
+  "WORKSPACE/notes" \
+  "WORKSPACE/projects" \
+  "$WORKSPACE/sandbox" \
+  "WORKSPACE/scripts" \
+  "$WORKSPACE/tools"
+echo "🗂️  Created workspace at $WORKSPACE with subfolders: tools, sandbox, contrib"
+
 # 2) Ensure local bin on PATH
 export PATH="$HOME/.local/bin:$PATH"
 
