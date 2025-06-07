@@ -5,15 +5,15 @@ set -euo pipefail
 if   command -v apt    &>/dev/null; then
   sudo apt update
   sudo apt install -y \
-    git curl zsh fzf htop python3-pip nodejs npm build-essential
+    git curl zsh fzf htop python3-pip ripgrep bat build-essential
 elif command -v dnf    &>/dev/null; then
   sudo dnf install -y \
-    git curl zsh fzf htop python3-pip nodejs npm @development-tools
+    git curl zsh fzf htop python3-pip ripgrep bat @development-tools
 elif command -v pacman &>/dev/null; then
   sudo pacman -Sy --noconfirm \
-    git curl zsh fzf htop python-pip nodejs npm base-devel
+    git curl zsh fzf htop python-pip ripgrep bat base-devel
 else
-  echo "Install git, curl, zsh, fzf, htop, python3-pip, nodejs, npm manually." >&2
+  echo "Install git, curl, zsh, fzf, htop, python3-pip, ripgrep, bat manually." >&2
   exit 1
 fi
 
