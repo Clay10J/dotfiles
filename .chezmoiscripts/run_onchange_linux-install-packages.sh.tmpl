@@ -1,0 +1,15 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Refresh package index
+sudo apt-get update
+
+# Install APT packages from data file
+cat <<EOF | xargs -r sudo apt-get install -y
+{{- range .packages.linux.apt }}
+{{ . }}
+{{- end }}
+EOF
+
+{{- end -}}

@@ -1,0 +1,17 @@
+{{- /* Only emit this block when sshAgent is enabled for the host */ -}}
+{{- if default false .host.sshAgent }}
+
+# 1Password SSH Agent Key Curation for {{ .chezmoi.hostname }}
+# Only load these keys when sshAgent = true in chezmoi.toml
+
+[[ssh-keys]]
+# expose the key whose title exactly matches this hostname
+title = "{{ .chezmoi.hostname }}"
+vault = "Private"
+
+[[ssh-keys]]
+# then expose any key ending in "-work" from your Work vault
+title = "*-work"
+vault = "Work"
+
+{{- end -}}
