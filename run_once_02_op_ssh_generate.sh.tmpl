@@ -6,7 +6,7 @@ command -v op &>/dev/null || exit 1
 ! op whoami &>/dev/null && eval "$(op signin)"
 
 # 2) Generate & store SSH key in 1Password
-TITLE="SSH key $(hostname)"
+TITLE="$(hostname) SSH Key"
 if ! op item list --categories SSH_KEY --vault Personal \
      | grep -qxF "$TITLE"; then
   op item create --category SSH_KEY --title "$TITLE" --vault Personal
