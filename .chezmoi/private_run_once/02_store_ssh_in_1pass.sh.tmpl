@@ -7,12 +7,10 @@ if op item list --categories SSH_KEY --vault Personal \
   exit 0
 fi
 # sign in if needed
-if ! op whoami &>/dev/null; then
-  eval "$(op signin)"
-fi
+command -v op &>/dev/null || exit 1
+! op whoami &>/dev/null && eval "$(op signin)"
 KEY_PRIV="$HOME/.ssh/id_ed25519"
 KEY_PUB="$HOME/.ssh/id_ed25519.pub"
-# create with assignment args (no --fields)
 op item create \
   --category SSH_KEY \
   --title "$TITLE" \
