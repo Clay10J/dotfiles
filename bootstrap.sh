@@ -6,5 +6,4 @@ curl -fsSL \
 chmod +x ~/.local/share/chezmoi/.install-password-manager.sh
 
 # now run chezmoi as usual
-chezmoi init --apply --password-manager=1password \
-  git@github.com:Clay10J/dotfiles.git
+chezmoi init --apply git@github.com:Clay10J/dotfiles.git
