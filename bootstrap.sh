@@ -1,3 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+
 # fetch the pre-read hook from your GitHub dotfiles repo
 mkdir -p ~/.local/share/chezmoi
 curl -fsSL \
@@ -6,4 +9,5 @@ curl -fsSL \
 chmod +x ~/.local/share/chezmoi/.install-password-manager.sh
 
 # now run chezmoi as usual
-chezmoi init --apply git@github.com:Clay10J/dotfiles.git
+sh -c "$(curl -fsSL get.chezmoi.io)" \
+  --init --apply git@github.com:Clay10J/dotfiles.git
