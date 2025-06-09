@@ -1,6 +1,6 @@
 {{- if eq .chezmoi.os "linux" -}}
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -eu
 
 # Only run once per host
 # If statement will error for list command since it doesn't

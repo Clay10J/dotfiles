@@ -1,15 +1,20 @@
 {{- if eq .chezmoi.os "linux" -}}
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -eu
 
 # Refresh package index
 sudo apt-get update
 
-# Install APT packages from data file
-cat <<EOF | xargs -r sudo apt-get install -y
+# Gather packages into a variable
+packages="$(cat <<EOF
 {{- range .packages.linux.apt }}
 {{ . }}
 {{- end }}
 EOF
+)"
 
+# Install packages if any
+if [ -n "$packages" ]; then
+  printf '%s\n' "$packages" | xargs sudo apt-get install -y
+fi
 {{- end -}}
