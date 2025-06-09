@@ -1,0 +1,14 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Only run once per host
+# If statement will error for list command since it doesn't
+# seem to be implementedAdd commentMore actions
+# see https://developer.1password.com/docs/cli/reference/management-commands/item#item-list-flags
+if ! op item list --categories SSH_KEY --format json \
+     | grep -F "\"title\":\"{{ .chezmoi.hostname }}\"" &>/dev/null; then
+  # Generate a new Ed25519 SSH key in 1Password named after your host
+  op item create --category SSH_KEY --title "{{ .chezmoi.hostname }}"
+fi
+{{- end -}}

@@ -1,0 +1,25 @@
+# 1) Default password manager for all operations
+passwordManager = "1password"
+
+# 2) Tell chezmoi where to look for your data & scripts
+data = ".chezmoidata"
+scriptsDir = ".chezmoiscripts"
+
+# 3) Point the pre-read hook at your locally-fetched installer
+[hooks.read-source-state.pre]
+command = "${HOME}/.local/share/chezmoi/.install-password-manager.sh"
+
+# 4) If you ever want host-specific overrides:
+# [host."my-laptop"]
+#   e.g. only install laptop-specific packages or drop different dotfiles
+[host."commander"]
+sshAgent = true    # commander should use the 1Password SSH agent
+sshUser = "clay"
+
+# 5) If you want to strip a common prefix from targets:
+# stripPrefix = "home"   # Uncomment if you ever rename your source root
+
+# 6) (Optional) If you ever add encryption beyond 1Password:
+# [encryption.gpg]
+#   keyID = "ABCDEF0123456789"
+# ~/.config/chezmoi/chezmoi.toml
