@@ -1,0 +1,23 @@
+# ─── early: load the completion system ───────────────────
+autoload -Uz compinit
+compinit
+
+# ─── your custom aliases & functions ────────────────────
+# alias ll='ls -lah'
+# ...
+
+# ─── tool inits at the very end ─────────────────────────
+# 1Password signin (if needed)
+eval "$(op signin --account ${OP_ACCOUNT:-my})"
+
+# Starship prompt
+command -v starship >/dev/null && eval "$(starship init zsh)"
+
+# Astral UV (virtualenv manager)
+command -v uv >/dev/null && eval "$(uv init zsh)"
+
+# zoxide directory jumper (must follow compinit)
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+
+# fzf keybindings & completions
+[[ -f "${HOME}/.fzf.zsh" ]] && source "${HOME}/.fzf.zsh"
