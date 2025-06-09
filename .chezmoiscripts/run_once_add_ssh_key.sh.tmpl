@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+set -eu
+
+ssh_key="$HOME/.ssh/id_ed25519"
+pub_key="$ssh_key.pub"
+
+# Fix permissions
+chmod 600 "$ssh_key"
+chmod 644 "$pub_key"
+
+# Add to your SSH agent (no-op if already loaded)
+ssh-add "$ssh_key" || true
