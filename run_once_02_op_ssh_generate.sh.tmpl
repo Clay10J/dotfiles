@@ -9,7 +9,7 @@ command -v op &>/dev/null || exit 1
 TITLE="SSH key $(hostname)"
 if ! op item list --categories ssh --vault Personal \
      | grep -qxF "$TITLE"; then
-  op item create --category ssh --title "$TITLE" --vault Personal
+  op item create --category SSH_KEY --title "$TITLE" --vault Personal
   echo "🔑 Generated & vaulted SSH key as '$TITLE'"
 fi
 
