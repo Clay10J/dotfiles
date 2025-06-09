@@ -6,6 +6,10 @@ command -v op &>/dev/null || exit 1
 ! op whoami &>/dev/null && eval "$(op signin)"
 
 # 2) Generate & store SSH key in 1Password
+# If statement will error for list command since it doesn't
+# seem to be implemented
+# see https://developer.1password.com/docs/cli/reference/management-commands/item#item-list-flags
+
 TITLE="$(hostname) SSH Key"
 if ! op item list --categories SSH_KEY --vault Personal \
      | grep -qxF "$TITLE"; then
