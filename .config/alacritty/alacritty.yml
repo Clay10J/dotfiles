@@ -1,0 +1,9 @@
+window:
+  opacity: 0.85
+
+font:
+  family: "CaskaydiaCove Nerd Font"
+  size: 12.0
+
+scrolling:
+  history: 5000

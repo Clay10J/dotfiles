@@ -2,6 +2,17 @@ export PATH="$HOME/.local/bin:$PATH"
 
 alias bat='batcat'
 
+# ─── zoxide: smarter `cd` ───────────────────────────────────────────────────
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+  alias z='zoxide'
+fi
+
+# ─── starship prompt ─────────────────────────────────────────────────────────
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi
+
 # UV completion
 if command -v uv &>/dev/null; then
   eval "$(uv completion zsh)"
