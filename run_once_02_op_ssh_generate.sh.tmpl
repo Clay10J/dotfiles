@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -e
+
+# 1) Make sure op is available
+command -v op &>/dev/null || exit 1
+! op whoami &>/dev/null && eval "$(op signin)"
+
+# 2) Generate & store SSH key in 1Password
+TITLE="SSH key $(hostname)"
+if ! op item list --categories ssh --vault Personal \
+     | grep -qxF "$TITLE"; then
+  op item create --category ssh --title "$TITLE" --vault Personal
+  echo "🔑 Generated & vaulted SSH key as '$TITLE'"
+fi
+
+# 3) Write the key locally
+mkdir -p ~/.ssh
+op read "op://Personal/$TITLE/privateKey?ssh-format=openssh" \
+  > ~/.ssh/id_ed25519
+chmod 600 ~/.ssh/id_ed25519
+
+op read "op://Personal/$TITLE/publicKey" \
+  > ~/.ssh/id_ed25519.pub
+chmod 644 ~/.ssh/id_ed25519.pub
+
+echo "🗄️  Wrote SSH key to ~/.ssh/id_ed25519{,.pub}"
