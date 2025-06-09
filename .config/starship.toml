@@ -1,0 +1,12 @@
+add_newline = false
+
+[directory]
+truncation_length = 3
+
+[git_branch]
+symbol = "  "
+
+[battery]
+full_symbol = "ðŸ”‹"
+threshold = 30
+style = "bold red"
