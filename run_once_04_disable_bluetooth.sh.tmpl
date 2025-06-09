@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+if systemctl is-enabled --quiet bluetooth.service; then
+  sudo systemctl disable bluetooth.service
+  echo "🔇 Disabled Bluetooth on boot (you can re-enable manually)"
+fi
