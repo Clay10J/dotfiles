@@ -2,6 +2,7 @@
 passwordManager = "1password"
 
 # 2) Tell chezmoi where to look for your scripts
+data = ".chezmoidata"
 scriptsDir = ".chezmoiscripts"
 
 # 3) Point the pre-read hook at your locally-fetched installer

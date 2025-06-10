@@ -2,19 +2,13 @@
 #!/usr/bin/env sh
 set -eu
 
-# Refresh package index
+# Refresh once
 sudo apt-get update
 
-# Gather packages from your data file
-packages="$(cat <<EOF
+# Install everything declared in .chezmoidata/packages.yaml
+cat <<EOF | xargs -r sudo apt-get install -y
 {{- range .packages.linux.apt }}
 {{ . }}
 {{- end }}
 EOF
-)"
-
-# Install if non-empty
-if [ -n "$packages" ]; then
-  printf '%s\n' "$packages" | xargs -r sudo apt-get install -y
-fi
 {{- end -}}
