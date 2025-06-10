@@ -1,0 +1,10 @@
+packages:
+  linux:
+    apt:
+      - zsh
+      - htop
+      - ripgrep
+      - bat
+      - tree
+      - zoxide
+      - fzf
