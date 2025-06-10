@@ -1,8 +1,7 @@
 # 1) Default password manager for all operations
 passwordManager = "1password"
 
-# 2) Tell chezmoi where to look for your data & scripts
-data = ".chezmoidata"
+# 2) Tell chezmoi where to look for your scripts
 scriptsDir = ".chezmoiscripts"
 
 # 3) Point the pre-read hook at your locally-fetched installer
