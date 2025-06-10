@@ -7,7 +7,7 @@ sudo apt-get update
 
 # Gather packages into a variable
 packages="$(cat <<EOF
-{{- range .packages.linux.apt }}
+{{- range .chezmoi.data.packages.linux.apt }}
 {{ . }}
 {{- end }}
 EOF
@@ -15,6 +15,6 @@ EOF
 
 # Install packages if any
 if [ -n "$packages" ]; then
-  printf '%s\n' "$packages" | xargs sudo apt-get install -y
+  printf '%s\n' "$packages" | xargs -r sudo apt-get install -y
 fi
 {{- end -}}
