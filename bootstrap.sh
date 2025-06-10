@@ -32,3 +32,6 @@ if command -v zsh >/dev/null 2>&1; then
     echo "Login shell already set to Zsh."
   fi
 fi
+
+# 6) Immediately switch into Zsh (replaces this Bash process)
+exec zsh -l
