@@ -5,7 +5,11 @@ compinit
 # ─── your custom aliases & functions ────────────────────
 # alias ll='ls -lah'
 # ...
-
+alias bat='batcat'
+{{- /* Only on Debian/Ubuntu/Mint-style systems with apt */ -}}
+{{- if pathExists "/usr/bin/apt-get" -}}
+alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+{{- end -}}
 # ─── tool inits at the very end ─────────────────────────
 # 1Password signin (if needed)
 eval "$(op signin --account ${OP_ACCOUNT:-my})"
