@@ -13,9 +13,6 @@ eval "$(op signin --account ${OP_ACCOUNT:-my})"
 # Starship prompt
 command -v starship >/dev/null && eval "$(starship init zsh)"
 
-# Astral UV (virtualenv manager)
-command -v uv >/dev/null && eval "$(uv init zsh)"
-
 # zoxide directory jumper (must follow compinit)
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 
