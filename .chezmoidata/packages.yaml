@@ -8,3 +8,5 @@ packages:
       - tree
       - zoxide
       - fzf
+      - alacritty
+      - tmux
