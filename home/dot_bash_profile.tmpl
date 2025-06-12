@@ -1,0 +1,6 @@
+# ~/.bash_profile (from dot_bash_profile.tmpl)
+
+# If this is Bash (not already Zsh), hop into zsh as a login shell
+if [ -n "${BASH_VERSION-}" ] && [ -z "${ZSH_VERSION-}" ]; then
+  exec zsh -l
+fi
