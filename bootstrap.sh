@@ -1,37 +1,50 @@
 #!/usr/bin/env sh
 set -eu
 
+# 0) Make sure ~/bin is on PATH
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+# 1) Install/update chezmoi into ~/bin if missing
+if ! command -v chezmoi >/dev/null 2>&1; then
+  mkdir -p "$HOME/bin"
+  sh -c "$(curl -fsSL get.chezmoi.io)" -- -b "$HOME/bin"
+fi
+
 STATE_DIR="$HOME/.local/share/chezmoi"
+REPO="git@github.com:Clay10J/dotfiles.git"
+HOOK_URL="https://raw.githubusercontent.com/Clay10J/dotfiles/main/.install-password-manager.sh"
 
-# 0) Nuke any half-baked state so init always sees an empty dir
-rm -rf "$STATE_DIR"
+# 2) Clone vs. update
+if [ -d "$STATE_DIR/.git" ]; then
+  # → Existing install: pull & apply
+  # 2a) Ensure hook is installed for any applies needing 1Password
+  mkdir -p "$STATE_DIR"
+  curl -fsSL "$HOOK_URL" -o "$STATE_DIR/.install-password-manager.sh"
+  chmod +x "$STATE_DIR/.install-password-manager.sh"
 
-# 1) Install/update the chezmoi binary
-sh -c "$(curl -fsSL get.chezmoi.io)"
+  # 2b) Pull downstream changes and re-apply
+  chezmoi update
+  chezmoi apply
+else
+  # → Fresh install: clone first (no --apply), then hook, then apply
+  rm -rf "$STATE_DIR"
+  chezmoi init "$REPO"
 
-# 2) Clone your dotfiles (no apply yet)
-chezmoi init git@github.com:Clay10J/dotfiles.git
+  mkdir -p "$STATE_DIR"
+  curl -fsSL "$HOOK_URL" -o "$STATE_DIR/.install-password-manager.sh"
+  chmod +x "$STATE_DIR/.install-password-manager.sh"
 
-# 3) Install the pre-read hook (now that the dir exists)
-curl -fsSL \
-  https://raw.githubusercontent.com/Clay10J/dotfiles/main/.install-password-manager.sh \
-  -o "$STATE_DIR/.install-password-manager.sh"
-chmod +x "$STATE_DIR/.install-password-manager.sh"
+  chezmoi apply
+fi
 
-# 4) Finally apply everything (the hook will run pre-read)
-chezmoi apply
-
-# 5) Ensure zsh is your login shell
+# 3) (Optional) set Zsh as login shell if not already
 if command -v zsh >/dev/null 2>&1; then
-  CURRENT_SHELL=$(getent passwd "$(whoami)" | cut -d: -f7)
+  USER_SHELL=$(getent passwd "$(whoami)" | cut -d: -f7)
   ZSH_PATH=$(command -v zsh)
-  if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
-    echo "Changing default shell to Zsh ($ZSH_PATH)…"
+  if [ "$USER_SHELL" != "$ZSH_PATH" ]; then
+    printf 'Changing login shell to %s…\n' "$ZSH_PATH"
     chsh -s "$ZSH_PATH" "$(whoami)" || true
-  else
-    echo "Login shell already set to Zsh."
   fi
 fi
 
-# 6) Immediately switch into Zsh (replaces this Bash process)
-exec zsh -l
+echo "✅ Bootstrap complete. Open a new terminal to start using your dotfiles."
