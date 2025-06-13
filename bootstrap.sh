@@ -1,50 +1,50 @@
 #!/usr/bin/env sh
 set -eu
 
-# 0) Make sure ~/bin is on PATH
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+# 0) Ensure ~/bin is on your PATH
+export CHEZMOI_INSTALL_DIR="$HOME/bin"
+export PATH="$CHEZMOI_INSTALL_DIR:$PATH"
 
-# 1) Install/update chezmoi into ~/bin if missing
+# 1) Install/update chezmoi into ~/bin
 if ! command -v chezmoi >/dev/null 2>&1; then
-  mkdir -p "$HOME/bin"
-  sh -c "$(curl -fsSL get.chezmoi.io)" -- -b "$HOME/bin"
+  mkdir -p "$CHEZMOI_INSTALL_DIR"
+  sh -c "$(curl -fsSL get.chezmoi.io)" -- -b "$CHEZMOI_INSTALL_DIR"
 fi
 
+# 2) Install the 1Password pre-read hook
+HOOK="$HOME/.config/chezmoi/install-password-manager.sh"
+mkdir -p "$(dirname "$HOOK")"
+curl -fsSL \
+  https://raw.githubusercontent.com/Clay10J/dotfiles/main/.install-password-manager.sh \
+  -o "$HOOK"
+chmod +x "$HOOK"
+
+# 3) Bootstrap vs. update
 STATE_DIR="$HOME/.local/share/chezmoi"
 REPO="git@github.com:Clay10J/dotfiles.git"
-HOOK_URL="https://raw.githubusercontent.com/Clay10J/dotfiles/main/.install-password-manager.sh"
 
-# 2) Clone vs. update
-if [ -d "$STATE_DIR/.git" ]; then
-  # → Existing install: pull & apply
-  # 2a) Ensure hook is installed for any applies needing 1Password
-  mkdir -p "$STATE_DIR"
-  curl -fsSL "$HOOK_URL" -o "$STATE_DIR/.install-password-manager.sh"
-  chmod +x "$STATE_DIR/.install-password-manager.sh"
-
-  # 2b) Pull downstream changes and re-apply
-  chezmoi update
-  chezmoi apply
-else
-  # → Fresh install: clone first (no --apply), then hook, then apply
+if [ ! -d "$STATE_DIR/.git" ]; then
+  echo "🚀 First-time bootstrap: init & apply templates"
   rm -rf "$STATE_DIR"
-  chezmoi init "$REPO"
-
-  mkdir -p "$STATE_DIR"
-  curl -fsSL "$HOOK_URL" -o "$STATE_DIR/.install-password-manager.sh"
-  chmod +x "$STATE_DIR/.install-password-manager.sh"
-
-  chezmoi apply
+  # Clone, render config (incl. scriptsDir), load data & scripts, run hooks, apply templates
+  chezmoi init --apply "$REPO"
+  
+  echo "⚙️  Applying with verbose to show script runs"
+  chezmoi apply --verbose
+else
+  echo "⟳ Existing install: update config & apply templates"
+  chezmoi update --init
+  chezmoi apply --verbose
 fi
 
-# 3) (Optional) set Zsh as login shell if not already
+# 4) (Optional) Switch your login shell to zsh
 if command -v zsh >/dev/null 2>&1; then
-  USER_SHELL=$(getent passwd "$(whoami)" | cut -d: -f7)
-  ZSH_PATH=$(command -v zsh)
-  if [ "$USER_SHELL" != "$ZSH_PATH" ]; then
-    printf 'Changing login shell to %s…\n' "$ZSH_PATH"
-    chsh -s "$ZSH_PATH" "$(whoami)" || true
+  CURRENT="$(getent passwd "$(whoami)" | cut -d: -f7)"
+  ZSH="$(command -v zsh)"
+  if [ "$CURRENT" != "$ZSH" ]; then
+    printf '🔄 Changing login shell to %s…\n' "$ZSH"
+    chsh -s "$ZSH" "$(whoami)" || true
   fi
 fi
 
-echo "✅ Bootstrap complete. Open a new terminal to start using your dotfiles."
+echo "✅ Bootstrap complete. Open a new terminal to see your dotfiles in action."
