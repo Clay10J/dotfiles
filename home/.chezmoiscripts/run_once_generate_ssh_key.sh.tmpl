@@ -14,8 +14,7 @@ if ! op item get "$item_title" >/dev/null 2>&1; then
   echo "🔐 Generating new SSH key in 1Password: $item_title"
   op item create \
     --title "$item_title" \
-    --category SSH_KEY \
-    --generate-ssh-key
+    --category SSH_KEY
 fi
 
 # 2) Pull down the private & public halves into ~/.ssh
