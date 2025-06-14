@@ -1,11 +1,7 @@
-{{- if eq .chezmoi.os "linux" -}}
-#!/usr/bin/env sh
-set -eu
-
-# This is a run_once_ script, so Chezmoi ensures it's only invoked one time.
-
-# If no SSH-Key item exists with the exact title of this host, create one.
-if ! op item get --format json "{{ .chezmoi.hostname }}" >/dev/null 2>&1; then
-  op item create --category SSH_KEY --title "{{ .chezmoi.hostname }}"
+#!/usr/bin/env bash
+set -e
+SSH="$HOME/.ssh/id_ed25519"
+if [ ! -f "$SSH" ]; then
+  mkdir -p "$HOME/.ssh"
+  ssh-keygen -q -t ed25519 -f "$SSH" -N ""
 fi
-{{- end -}}
