@@ -1,7 +1,34 @@
 #!/usr/bin/env bash
 set -e
-SSH="$HOME/.ssh/id_ed25519"
-if [ ! -f "$SSH" ]; then
-  mkdir -p "$HOME/.ssh"
-  ssh-keygen -q -t ed25519 -f "$SSH" -N ""
+
+# Ensure 1Password CLI is available
+if ! command -v op >/dev/null 2>&1; then
+  echo "⚠️  1Password CLI (op) not found; skipping SSH key setup"
+  exit 0
 fi
+
+item_title="SSH key for $(hostname)"
+
+# 1) If the SSH_KEY item doesn’t exist yet, create it (this will generate an ed25519 pair)
+if ! op item get "$item_title" >/dev/null 2>&1; then
+  echo "🔐 Generating new SSH key in 1Password: $item_title"
+  op item create \
+    --title "$item_title" \
+    --category SSH_KEY \
+    --generate-ssh-key
+fi
+
+# 2) Pull down the private & public halves into ~/.ssh
+mkdir -p "$HOME/.ssh"
+echo "📥 Fetching private key from 1Password"
+op item get "$item_title" --fields label=privateKey > "$HOME/.ssh/id_ed25519"
+echo "📥 Fetching public key from 1Password"
+op item get "$item_title" --fields label=publicKey  > "$HOME/.ssh/id_ed25519.pub"
+
+# 3) Secure file permissions
+chmod 600 "$HOME/.ssh/id_ed25519"
+chmod 644 "$HOME/.ssh/id_ed25519.pub"
+
+# 4) Add to the agent (if running)
+chmod 600 "$HOME/.ssh/id_ed25519"
+ssh-add "$HOME/.ssh/id_ed25519" >/dev/null 2>&1 || true
