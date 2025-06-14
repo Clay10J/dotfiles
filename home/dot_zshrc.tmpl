@@ -13,11 +13,10 @@ compinit
 # ...
 alias bat='batcat'
 
-{{- /* Only on Debian/Ubuntu/Mint-style systems with apt */ -}}
-{{- $_, $err := stat "/usr/bin/apt-get" -}}
-{{- if not $err -}}
-alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
-{{- end -}}
+# ─── Only on Debian/Ubuntu/Mint-style systems with apt ────
+if command -v apt-get >/dev/null; then
+  alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+fi
 
 # ─── tool inits at the very end ─────────────────────────
 # 1Password signin (if needed)
