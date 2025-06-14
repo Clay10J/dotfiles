@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -e
-ssh_key="$HOME/.ssh/id_ed25519"
-pub_key="$ssh_key.pub"
-chmod 600 "$ssh_key"
-chmod 644 "$pub_key"
-ssh-add "$ssh_key" || true
