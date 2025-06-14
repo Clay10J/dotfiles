@@ -6,8 +6,10 @@ data="$HOME/.local/share/chezmoi/.chezmoidata/packages.yaml"
 cli_pkgs=$(yq e '.packages.linux.cli[]' "$data")
 pkgs="$cli_pkgs"
 
-# only install GUI pkgs when this host has hasGUI = true
-{{- if .chezmoi.config.hasGUI -}}
+# only install GUI pkgs when this host has headless = false
+{{- /* Grab the host-specific map for the current hostname */ -}}
+{{- $hostData := index .data .chezmoi.hostname -}}
+{{- if not $hostData.headless -}}
 gui_pkgs=$(yq e '.packages.linux.gui[]' "$data")
 pkgs="$pkgs $gui_pkgs"
 {{- end -}}
