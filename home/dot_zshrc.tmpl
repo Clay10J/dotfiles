@@ -12,16 +12,22 @@ compinit
 # alias ll='ls -lah'
 # ...
 alias bat='batcat'
+
 {{- /* Only on Debian/Ubuntu/Mint-style systems with apt */ -}}
-{{- if pathExists "/usr/bin/apt-get" -}}
+{{- $_, $err := stat "/usr/bin/apt-get" -}}
+{{- if not $err -}}
 alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
 {{- end -}}
+
 # ─── tool inits at the very end ─────────────────────────
 # 1Password signin (if needed)
 eval "$(op signin --account ${OP_ACCOUNT:-my})"
+
 # Starship prompt
 command -v starship >/dev/null && eval "$(starship init zsh)"
+
 # zoxide directory jumper (must follow compinit)
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+
 # fzf keybindings & completions
 [[ -f "${HOME}/.fzf.zsh" ]] && source "${HOME}/.fzf.zsh"
