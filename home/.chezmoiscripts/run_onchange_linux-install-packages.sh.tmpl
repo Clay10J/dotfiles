@@ -7,7 +7,7 @@ cli_pkgs=$(yq e '.packages.linux.cli[]' "$data")
 pkgs="$cli_pkgs"
 
 # only install GUI pkgs when this host has hasGUI = true
-{{- if .chezmoi.data.hasGUI -}}
+{{- if .data.hasGUI -}}
 gui_pkgs=$(yq e '.packages.linux.gui[]' "$data")
 pkgs="$pkgs $gui_pkgs"
 {{- end -}}
