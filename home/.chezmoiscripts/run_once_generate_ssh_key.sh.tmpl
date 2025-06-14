@@ -7,7 +7,7 @@ if ! command -v op >/dev/null 2>&1; then
   exit 0
 fi
 
-item_title="SSH key for $(hostname)"
+item_title="$(hostname) SSH Key"
 
 # 1) If the SSH_KEY item doesn’t exist yet, create it (this will generate an ed25519 pair)
 if ! op item get "$item_title" >/dev/null 2>&1; then
