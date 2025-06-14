@@ -1,11 +1,14 @@
 packages:
   linux:
-    apt:
+    cli:
       - zsh
+      - fzf
+      - zoxide
       - htop
       - ripgrep
       - bat
       - tree
-      - zoxide
-      - fzf
-      - tmux
+    gui:
+      - vlc
+      - gnome-terminal
+      - code

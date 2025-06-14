@@ -1,18 +1,10 @@
-#!/usr/bin/env sh
-set -eu
-
-# Only run once per host (Chezmoi tracks this because of the “run_once_” prefix)
-# and only when zsh is installed.
-
+#!/usr/bin/env bash
+set -e
 if command -v zsh >/dev/null 2>&1; then
-  USER_NAME=$(whoami)
-  DESIRED_SHELL=$(command -v zsh)
-  CURRENT_SHELL=$(getent passwd "$USER_NAME" | cut -d: -f7)
-
-  if [ "$CURRENT_SHELL" != "$DESIRED_SHELL" ]; then
-    printf 'Changing default shell to %s for user %s\n' \
-      "$DESIRED_SHELL" "$USER_NAME"
-    # Change shell as the user—chsh is setuid-root, so no sudo needed
-    chsh -s "$DESIRED_SHELL" "$USER_NAME"
-  fi
+    USER_NAME=$(whoami)
+    DESIRED_SHELL=$(command -v zsh)
+    CURRENT_SHELL=$(getent passwd "$USER_NAME" | cut -d: -f7)
+    if [ "$CURRENT_SHELL" != "$DESIRED_SHELL" ]; then
+        chsh -s "$DESIRED_SHELL" "$USER_NAME"
+    fi
 fi

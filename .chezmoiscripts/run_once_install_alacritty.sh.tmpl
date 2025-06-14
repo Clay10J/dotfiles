@@ -1,55 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
-
-# ========== CONFIG ==========
-INSTALL_DIR="$HOME/.local/bin"
-ALACRITTY_SRC="$HOME/.local/src/alacritty"
-REPO_URL="https://github.com/alacritty/alacritty.git"
-COMPLETIONS_SUBDIR="extra/completions"
-# ========== END CONFIG ==========
-
-# 1. Install build dependencies
-sudo apt-get update
-sudo apt-get install -y \
-  cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev python3 \
-  libxkbcommon-dev python3-pip
-
-# 2. Install Rust (if not present)
-if ! command -v cargo >/dev/null 2>&1; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  export PATH="$HOME/.cargo/bin:$PATH"
+if ! command -v alacritty >/dev/null 2>&1; then
+  sudo apt-get update
+  sudo apt-get install -y alacritty
 fi
-
-# 3. Clone or update Alacritty source
-if [ ! -d "$ALACRITTY_SRC" ]; then
-  git clone --depth=1 "$REPO_URL" "$ALACRITTY_SRC"
-else
-  git -C "$ALACRITTY_SRC" pull --rebase
-fi
-
-# 4. Build Alacritty
-cd "$ALACRITTY_SRC"
-cargo build --release
-
-# 5. Install the binary
-mkdir -p "$INSTALL_DIR"
-cp target/release/alacritty "$INSTALL_DIR/"
-
-# 6. Install completions
-COMPLETIONS="$ALACRITTY_SRC/$COMPLETIONS_SUBDIR"
-
-# Zsh
-mkdir -p "${ZDOTDIR:-$HOME}/.zsh/completions"
-cp "$COMPLETIONS/_alacritty" "${ZDOTDIR:-$HOME}/.zsh/completions/"
-
-# Bash
-mkdir -p "$HOME/.bash_completion.d"
-cp "$COMPLETIONS/alacritty.bash" "$HOME/.bash_completion.d/"
-
-# Fish
-mkdir -p "$HOME/.config/fish/completions"
-cp "$COMPLETIONS/alacritty.fish" "$HOME/.config/fish/completions/"
-
-echo "✅ Alacritty built and completions installed."
-
-# (Optional: you may want to symlink, update .desktop files, etc. See INSTALL.md for more customizations)

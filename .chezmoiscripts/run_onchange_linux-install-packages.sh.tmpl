@@ -1,14 +1,20 @@
 {{- if eq .chezmoi.os "linux" -}}
-#!/usr/bin/env sh
-set -eu
+#!/usr/bin/env bash
+set -e
 
-# Refresh once
+data="$HOME/.local/share/chezmoi/.chezmoidata/packages.yaml"
+cli_pkgs=$(yq e '.packages.linux.cli[]' "$data")
+pkgs="$cli_pkgs"
+
+# only install GUI pkgs when this host has hasGUI = true
+{{- $host := index .chezmoi.config.Host .chezmoi.hostname -}}
+{{- if $host.hasGUI -}}
+gui_pkgs=$(yq e '.packages.linux.gui[]' "$data")
+pkgs="$pkgs $gui_pkgs"
+{{- end -}}
+
 sudo apt-get update
-
-# Install everything declared in .chezmoidata/packages.yaml
-cat <<EOF | xargs -r sudo apt-get install -y
-{{- range .packages.linux.apt }}
-{{ . }}
-{{- end }}
-EOF
+for pkg in $pkgs; do
+  dpkg -s "$pkg" >/dev/null 2>&1 || sudo apt-get install -y "$pkg"
+done
 {{- end -}}

@@ -1,0 +1,10 @@
+# Ignore data except packages.yaml
+.chezmoidata/*
+!.chezmoidata/packages.yaml
+
+# Ignore scripts except templates
+.chezmoiscripts/*
+!.chezmoiscripts/*.tmpl
+
+# Ignore local chezmoi state
+.local/share/chezmoi/

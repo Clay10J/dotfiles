@@ -1,7 +1,5 @@
-#!/usr/bin/env sh
-set -eu
-
-# Install Astral UV (virtualenv manager) if missing
+#!/usr/bin/env bash
+set -e
 if ! command -v uv >/dev/null 2>&1; then
-  curl https://get.astral.sh/ | sh
+  curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
