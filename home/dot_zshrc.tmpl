@@ -1,7 +1,13 @@
-# ─── early: load the completion system ───────────────────
+# Enable custom completions from ~/.zsh/completions (Alacritty, etc.)
+if [ -d "$HOME/.zsh/completions" ]; then
+  fpath=($HOME/.zsh/completions $fpath)
+fi
+
+# Initialize zsh completion system
 autoload -Uz compinit
 compinit
 
+# ─── early: load the completion system ───────────────────
 # ─── your custom aliases & functions ────────────────────
 # alias ll='ls -lah'
 # ...
@@ -13,12 +19,9 @@ alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
 # ─── tool inits at the very end ─────────────────────────
 # 1Password signin (if needed)
 eval "$(op signin --account ${OP_ACCOUNT:-my})"
-
 # Starship prompt
 command -v starship >/dev/null && eval "$(starship init zsh)"
-
 # zoxide directory jumper (must follow compinit)
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
-
 # fzf keybindings & completions
 [[ -f "${HOME}/.fzf.zsh" ]] && source "${HOME}/.fzf.zsh"

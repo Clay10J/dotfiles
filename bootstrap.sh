@@ -15,13 +15,13 @@ fi
 HOOK="$HOME/.config/chezmoi/install-password-manager.sh"
 mkdir -p "$(dirname "$HOOK")"
 curl -fsSL \
-  https://raw.githubusercontent.com/Clay10J/dotfiles/main/.install-password-manager.sh \
+  https://raw.githubusercontent.com/<my_name>/dotfiles/main/.install-password-manager.sh \
   -o "$HOOK"
 chmod +x "$HOOK"
 
 # 3) Bootstrap vs. update
 STATE_DIR="$HOME/.local/share/chezmoi"
-REPO="git@github.com:Clay10J/dotfiles.git"
+REPO="git@github.com:<my_name>/dotfiles.git"
 
 if [ ! -d "$STATE_DIR/.git" ]; then
   echo "🚀 First-time bootstrap: init & apply templates"
