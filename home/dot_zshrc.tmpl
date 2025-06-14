@@ -12,6 +12,7 @@ compinit
 # alias ll='ls -lah'
 # ...
 alias bat='batcat'
+alias cleanchezmoi='rm -rf ~/.local/share/chezmoi ~/.config/chezmoi && chezmoi state delete-bucket --bucket=entryState && chezmoi state delete-bucket --bucket=scriptState'
 
 # ─── Only on Debian/Ubuntu/Mint-style systems with apt ────
 if command -v apt-get >/dev/null; then
