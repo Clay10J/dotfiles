@@ -2,20 +2,25 @@
 #!/usr/bin/env bash
 set -e
 
-data="$HOME/.local/share/chezmoi/.chezmoidata/packages.yaml"
-cli_pkgs=$(yq e '.packages.linux.cli[]' "$data")
+DATA_DIR="$HOME/.local/share/chezmoi/.chezmoidata"
+PKG_FILE="$DATA_DIR/packages.yaml"
+
+# Load CLI packages
+cli_pkgs=$(yq e '.packages.linux.cli[]' "$PKG_FILE")
 pkgs="$cli_pkgs"
 
-# only install GUI pkgs when this host has headless = false
-{{- /* Grab the host-specific map for the current hostname */ -}}
-{{- $hostData := index .data .chezmoi.hostname -}}
-{{- if not $hostData.headless -}}
-gui_pkgs=$(yq e '.packages.linux.gui[]' "$data")
+# 5.2 Host-specific GUI packages (skip on headless)
+{{- $host := index .data .chezmoi.hostname -}}
+{{- if not $host.headless -}}
+gui_pkgs=$(yq e '.packages.linux.gui[]' "$PKG_FILE")
 pkgs="$pkgs $gui_pkgs"
 {{- end -}}
 
+# 5.4 Install loop (only runs on Linux via the guard above)
 sudo apt-get update
 for pkg in $pkgs; do
-  dpkg -s "$pkg" >/dev/null 2>&1 || sudo apt-get install -y "$pkg"
+  if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+    sudo apt-get install -y "$pkg"
+  fi
 done
 {{- end -}}

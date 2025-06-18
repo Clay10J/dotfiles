@@ -1,33 +1,60 @@
-# Enable custom completions from ~/.zsh/completions (Alacritty, etc.)
+# ~/.zshrc (managed by chezmoi)
+
+# 1) Dynamic $PATH construction ────────────────────────────
+{{- $home := .chezmoi.homeDir -}}
+{{- $candidates := list \
+    (joinPath $home "bin") \
+    (joinPath $home ".local/bin") \
+    (joinPath $home "go/bin") \
+    (joinPath $home ".cargo/bin") \
+  -}}
+{{- $paths := slice -}}
+{{- range _, $p := $candidates -}}
+  {{- if stat $p -}}
+    {{- $paths = mustAppend $paths $p -}}
+  {{- end -}}
+{{- end -}}
+{{- if $paths -}}
+export PATH={{ toStrings $paths | join ":" }}:$PATH
+{{- end -}}
+
+# 2) Custom completions ────────────────────────────────────
 if [ -d "$HOME/.zsh/completions" ]; then
   fpath=($HOME/.zsh/completions $fpath)
 fi
-
-# Initialize zsh completion system
 autoload -Uz compinit
 compinit
 
-# ─── early: load the completion system ───────────────────
-# ─── your custom aliases & functions ────────────────────
-# alias ll='ls -lah'
-# ...
+# 3) Early aliases & functions ────────────────────────────
 alias bat='batcat'
-alias cleanchezmoi='rm -rf ~/.local/share/chezmoi ~/.config/chezmoi && chezmoi state delete-bucket --bucket=entryState && chezmoi state delete-bucket --bucket=scriptState'
+alias cleanchezmoi='rm -rf ~/.local/share/chezmoi ~/.config/chezmoi && chezmoi state delete-bucket --bucket=scriptState'
 
-# ─── Only on Debian/Ubuntu/Mint-style systems with apt ────
+# 4) Host-specific “update” alias (only on non-headless hosts) ─
+{{- with index .data .chezmoi.hostname -}}
+  {{- if not .headless -}}
 if command -v apt-get >/dev/null; then
   alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
 fi
+  {{- end -}}
+{{- end -}}
 
-# ─── tool inits at the very end ─────────────────────────
-# 1Password signin (if needed)
+# 5) Tool inits ───────────────────────────────────────────
+# 1Password
 eval "$(op signin --account ${OP_ACCOUNT:-my})"
 
-# Starship prompt
-command -v starship >/dev/null && eval "$(starship init zsh)"
+# Starship
+if command -v starship >/dev/null; then
+  eval "$(starship init zsh)"
+fi
 
-# zoxide directory jumper (must follow compinit)
-command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+# zoxide
+if command -v zoxide >/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
 
-# fzf keybindings & completions
-[[ -f "${HOME}/.fzf.zsh" ]] && source "${HOME}/.fzf.zsh"
+# 6) fzf keybindings/completions if present via glob ──────
+{{- $fzf := glob (joinPath .chezmoi.homeDir ".fzf.zsh") -}}
+{{- if gt (len $fzf) 0 -}}
+source "{{ index $fzf 0 }}"
+{{- end -}}
+
