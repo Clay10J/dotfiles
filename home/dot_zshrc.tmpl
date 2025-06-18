@@ -27,7 +27,7 @@ compinit
 
 # 3) Early aliases & functions ────────────────────────────
 alias bat='batcat'
-alias cleanchezmoi='rm -rf ~/.local/share/chezmoi ~/.config/chezmoi && chezmoi state delete-bucket --bucket=scriptState'
+alias cleanchezmoi='rm -rf ~/.local/share/chezmoi ~/.config/chezmoi && chezmoi state delete-bucket --bucket=scriptState && chezmoi state delete-bucket --bucket=entryState'
 
 # 4) Host-specific “update” alias (only on non-headless hosts) ─
 {{- with index .data .chezmoi.hostname -}}
