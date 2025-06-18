@@ -6,20 +6,25 @@ if [ "$(uname -s)" != "Linux" ]; then
   exit 0
 fi
 
-# Where we’ll clone the Nerd Fonts repo
-FONT_REPO="$HOME/.nerd-fonts"
+FONT_DIR="$HOME/.local/share/fonts"
+mkdir -p "$FONT_DIR"
 
-# Check if any of the three fonts are already installed
-if ! fc-list | grep -Eq 'CaskaydiaCove Nerd Font|MapleMono Nerd Font|Iosevka Nerd Font'; then
-  echo "🔽 Installing Nerd Fonts: CaskaydiaCove, MapleMono, Iosevka"
+# 1) Install CascadiaCode and Iosevka from the official Nerd Fonts releases
+NERD_BASE_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download"
+for family in CascadiaCode Iosevka; do
+  echo "🔽 Installing Nerd Font: $family"
+  curl -fsSL "$NERD_BASE_URL/${family}.zip" -o "$FONT_DIR/${family}.zip"
+  unzip -o "$FONT_DIR/${family}.zip" -d "$FONT_DIR"
+done
 
-  # Clean out any old clone
-  rm -rf "$FONT_REPO"
-  git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git "$FONT_REPO"
+# 2) Install Maple Mono NF from its own repo
+echo "🔽 Installing Maple Mono NF"
+MAPLE_URL="https://github.com/subframe7536/maple-font/releases/latest/download/MapleMono-NF-unhinted.zip"
+curl -fsSL "$MAPLE_URL" -o "$FONT_DIR/MapleMono.zip"
+unzip -o "$FONT_DIR/MapleMono.zip" -d "$FONT_DIR"
 
-  # Run the install script for just those three
-  "$FONT_REPO/install.sh" CaskaydiaCove MapleMono Iosevka
+# 3) Clean up zip files
+rm -f "$FONT_DIR"/*.zip
 
-  # Refresh font cache (user‐local)
-  fc-cache -f "$HOME/.local/share/fonts"
-fi
+# 4) Refresh the font cache
+fc-cache -f "$FONT_DIR"
