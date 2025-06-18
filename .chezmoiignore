@@ -1,0 +1,4 @@
+# Transient artifacts
+.DS_Store
+.cache/
+*.swp

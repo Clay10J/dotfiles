@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -euo pipefail
 
 # 1) Ensure ~/.local/bin is on your PATH for chezmoi
 CHEZMOI_INSTALL_DIR="$HOME/.local/bin"

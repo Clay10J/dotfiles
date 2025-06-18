@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -e
+
+# Only on Linux hosts
+if [ "$(uname -s)" != "Linux" ]; then
+  exit 0
+fi
+
+# 1) Install Kitty via the official binary installer if missing
+if ! command -v kitty >/dev/null 2>&1; then
+  echo "🔽 Installing Kitty via official installer"
+  curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+
+  # Symlink both kitty and kitten into ~/.local/bin
+  mkdir -p "$HOME/.local/bin"
+  ln -sf "$HOME/.local/kitty.app/bin/kitty" \
+        "$HOME/.local/kitty.app/bin/kitten" \
+        "$HOME/.local/bin/"
+fi
+
+# 2) Desktop integration so Kitty appears in your application menu
+echo "📂 Setting up desktop entries for Kitty"
+
+# Create user applications directory
+mkdir -p "$HOME/.local/share/applications"
+
+# Copy over the .desktop files
+cp "$HOME/.local/kitty.app/share/applications/kitty.desktop" \
+   "$HOME/.local/share/applications/"
+cp "$HOME/.local/kitty.app/share/applications/kitty-open.desktop" \
+   "$HOME/.local/share/applications/" || true
+
+# Update Exec and Icon paths in those desktop files
+ICON_PATH="$(readlink -f "$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png")"
+EXEC_PATH="$(readlink -f "$HOME/.local/kitty.app/bin/kitty")"
+sed -i \
+  -e "s|Icon=kitty|Icon=$ICON_PATH|g" \
+  -e "s|Exec=kitty|Exec=$EXEC_PATH|g" \
+  "$HOME/.local/share/applications/kitty*.desktop"
+
+# 3) Register Kitty as a terminal for xdg-open
+mkdir -p "$HOME/.config"
+echo 'kitty.desktop' > "$HOME/.config/xdg-terminals.list"

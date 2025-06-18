@@ -8,3 +8,15 @@
 
 # Ignore local chezmoi state
 .local/share/chezmoi/
+
+# Node modules
+node_modules/
+
+# macOS
+*.DS_Store
+
+# Editor swap files
+*.swp
+
+# IDE / editor settings
+.vscode/
