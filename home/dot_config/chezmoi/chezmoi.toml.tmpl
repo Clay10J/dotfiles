@@ -20,6 +20,7 @@ command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_onchange_linux-install-p
 
 [hooks.init.after]
 commands = [
+  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_set_git_remote.sh",
   "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_password_manager.sh",
   "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_onchange_linux-install-packages.sh",
   "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_generate_ssh_key.sh",
