@@ -9,6 +9,7 @@ packages:
       - bat
       - tree
       - jq
+      - fd-find
     gui:
       - vlc
       - gnome-terminal
