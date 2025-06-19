@@ -11,10 +11,7 @@ if ! command -v chezmoi >/dev/null 2>&1; then
   sh -c "$(curl -fsSL get.chezmoi.io)" -- -b "$CHEZMOI_INSTALL_DIR"
 fi
 
-# 3) Sign into 1Password
-eval "$(op signin)"
-
-# 4) Initialize and apply dotfiles
+# 3) Initialize and apply dotfiles
 "$CHEZMOI_INSTALL_DIR/chezmoi" init --apply https://github.com/Clay10J/dotfiles.git
 
 echo "✅ Bootstrap complete. Open a new terminal to see your dotfiles."
