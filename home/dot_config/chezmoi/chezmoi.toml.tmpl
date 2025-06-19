@@ -12,9 +12,6 @@ sshUser = "clay"
 
 # —————— hooks ——————
 
-[hooks.read-source-state.pre]
-command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_password_manager.sh"
-
 [hooks.change.onchange]
 command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_onchange_linux-install-packages.sh"
 
