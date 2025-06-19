@@ -15,6 +15,6 @@ fi
 eval "$(op signin)"
 
 # 4) Initialize and apply dotfiles
-"$CHEZMOI_INSTALL_DIR/chezmoi" init --apply git@github.com:Clay10J/dotfiles.git
+"$CHEZMOI_INSTALL_DIR/chezmoi" init --apply https://github.com/Clay10J/dotfiles.git
 
 echo "✅ Bootstrap complete. Open a new terminal to see your dotfiles."
