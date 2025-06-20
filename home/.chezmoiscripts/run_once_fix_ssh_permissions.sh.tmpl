@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+# Create SSH directory if it doesn't exist
+mkdir -p ~/.ssh
+
+# Set correct permissions
+chmod 700 ~/.ssh
+
+# If SSH key exists, set correct permissions
+if [ -f ~/.ssh/id_ed25519 ]; then
+  chmod 600 ~/.ssh/id_ed25519
+fi
+
+if [ -f ~/.ssh/id_ed25519.pub ]; then
+  chmod 644 ~/.ssh/id_ed25519.pub
+fi
+
+echo "✅ SSH permissions fixed" 
