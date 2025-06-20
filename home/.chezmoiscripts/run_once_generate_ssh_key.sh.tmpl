@@ -9,10 +9,24 @@ fi
 
 item_title="$(hostname) SSH Key"
 
-# 1) If the SSH_KEY item doesn’t exist yet, create it (this will generate an ed25519 pair)
+# 1) If the SSH_KEY item doesn't exist yet, create it (this will generate an ed25519 pair)
 if ! op item get "$item_title" >/dev/null 2>&1; then
   echo "🔐 Generating new SSH key in 1Password: $item_title"
   op item create \
     --title "$item_title" \
     --category SSH_KEY
 fi
+
+# 2) Extract the SSH keys to local files
+echo "📁 Extracting SSH keys to local files"
+mkdir -p ~/.ssh
+
+# Get the private key
+op read "op://$item_title/privateKey" > ~/.ssh/id_ed25519
+chmod 600 ~/.ssh/id_ed25519
+
+# Get the public key
+op read "op://$item_title/publicKey" > ~/.ssh/id_ed25519.pub
+chmod 644 ~/.ssh/id_ed25519.pub
+
+echo "✅ SSH keys extracted and permissions set"
