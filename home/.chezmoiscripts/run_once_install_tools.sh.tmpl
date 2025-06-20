@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -e
+
+{{- $host := index .data .chezmoi.hostname -}}
+
+echo "🛠️  Installing additional tools"
+
+# Install starship
+if ! command -v starship >/dev/null 2>&1; then
+  echo "🚀 Installing starship"
+  curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
+fi
+
+# Install uv
+if ! command -v uv >/dev/null 2>&1; then
+  echo "🐍 Installing uv"
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
+# Install fonts (only on GUI systems)
+{{- if not $host.headless -}}
+if [ "$(uname -s)" = "Linux" ]; then
+  FONT_DIR="$HOME/.local/share/fonts"
+  mkdir -p "$FONT_DIR"
+  
+  # Install JetBrains Mono Nerd Font
+  echo "🔤 Installing JetBrains Mono Nerd Font"
+  curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip -o "$FONT_DIR/JetBrainsMono.zip"
+  unzip -o "$FONT_DIR/JetBrainsMono.zip" -d "$FONT_DIR"
+  rm -f "$FONT_DIR/JetBrainsMono.zip"
+  
+  # Refresh font cache
+  fc-cache -f "$FONT_DIR"
+fi
+{{- end -}}
+
+# Install Brave browser (only on GUI systems)
+{{- if not $host.headless -}}
+if ! command -v brave-browser >/dev/null 2>&1; then
+  echo "🌐 Installing Brave browser"
+  {{- if eq .chezmoi.linuxDistro "ubuntu" "debian" "linuxmint" -}}
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSLo /etc/apt/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+  echo "deb [signed-by=/etc/apt/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+  sudo apt update
+  sudo apt install -y brave-browser
+  {{- else if eq .chezmoi.linuxDistro "fedora" "rhel" "centos" -}}
+  sudo dnf install -y dnf-plugins-core
+  sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
+  sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+  sudo dnf install -y brave-browser
+  {{- else if eq .chezmoi.linuxDistro "arch" -}}
+  sudo pacman -S --noconfirm brave-browser
+  {{- end -}}
+fi
+{{- end -}}
+
+# Install Cursor (only on GUI systems)
+{{- if not $host.headless -}}
+if ! command -v cursor >/dev/null 2>&1; then
+  echo "📝 Installing Cursor"
+  # Download and install Cursor AppImage
+  curl -L -o /tmp/cursor.AppImage "https://download.cursor.sh/linux/appImage/x64"
+  chmod +x /tmp/cursor.AppImage
+  sudo mv /tmp/cursor.AppImage /usr/local/bin/cursor
+  
+  # Create desktop entry for Cursor
+  mkdir -p ~/.local/share/applications
+  cat > ~/.local/share/applications/cursor.desktop << EOF
+[Desktop Entry]
+Name=Cursor
+Comment=AI-first code editor
+Exec=/usr/local/bin/cursor %F
+Icon=cursor
+Type=Application
+Categories=Development;IDE;
+MimeType=text/plain;inode/directory;application/x-code-workspace;
+StartupNotify=false
+StartupWMClass=Cursor
+EOF
+fi
+{{- end -}}
+
+echo "✅ Additional tools installation complete" 

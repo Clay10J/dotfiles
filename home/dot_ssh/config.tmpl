@@ -1,16 +1,27 @@
 # ~/.ssh/config.tmpl
+{{- $host := index .data .chezmoi.hostname -}}
 
+# Global settings
 Host *
-  User {{ default "root" .host.sshUser }}
+  User {{ .chezmoi.username | default "root" }}
   HostKeyAlgorithms +ssh-ed25519
-
-{{- if default false .host.sshAgent -}}
-# — 1Password SSH agent on “commander” —
+  {{- if $host.sshAgent -}}
   IdentityAgent {{ print .chezmoi.homeDir }}/.1password/agent.sock
   AddKeysToAgent yes
   ForwardAgent yes
-{{- else -}}
-# — Fallback to on-disk key for headless or non-agent hosts —
+  {{- else -}}
   IdentityFile {{ print .chezmoi.homeDir }}/.ssh/id_ed25519
   IdentitiesOnly yes
-{{- end -}}
+  {{- end -}}
+
+# GitHub configuration
+Host github.com
+  HostName github.com
+  User git
+  {{- if $host.sshAgent -}}
+  IdentityAgent {{ print .chezmoi.homeDir }}/.1password/agent.sock
+  AddKeysToAgent yes
+  {{- else -}}
+  IdentityFile {{ print .chezmoi.homeDir }}/.ssh/id_ed25519
+  IdentitiesOnly yes
+  {{- end -}}

@@ -1,2 +1,5 @@
+# Host-specific data for templating
 commander:
   headless: false
+  sshAgent: true
+  timezone: America/Chicago

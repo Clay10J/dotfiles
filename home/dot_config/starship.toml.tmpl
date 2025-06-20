@@ -1,0 +1,108 @@
+# Starship prompt configuration
+format = """
+[┌─](bold green)$username$hostname$directory$git_branch$git_status$python$nodejs$rust$golang$docker_context$kubernetes$aws$nix_shell$conda$memory_usage$cmd_duration
+[└─](bold green)$character"""
+
+[username]
+style_user = "bold blue"
+style_root = "bold red"
+format = "[$user]($style) "
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = false
+format = "[@$hostname](bold red) "
+disabled = false
+
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+format = "[$path]($style)[$read_only]($read_only_style) "
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+format = "on [$symbol$branch]($style) "
+style = "bold green"
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold red"
+conflicted = "⚡"
+ahead = "⇡\${count}"
+behind = "⇣\${count}"
+diverged = "⇕⇡\${ahead_count}⇣\${behind_count}"
+up_to_date = "✓"
+untracked = "?"
+stashed = "≡"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+[python]
+symbol = " "
+format = 'via [$symbol$pyenv_prefix($version)]($style) '
+style = "bold yellow"
+
+[nodejs]
+symbol = " "
+format = 'via [$symbol($version)]($style) '
+style = "bold green"
+
+[rust]
+symbol = " "
+format = 'via [$symbol($version)]($style) '
+style = "bold red"
+
+[golang]
+symbol = " "
+format = 'via [$symbol($version)]($style) '
+style = "bold cyan"
+
+[docker_context]
+symbol = " "
+format = 'via [$symbol$context]($style) '
+style = "bold blue"
+
+[kubernetes]
+symbol = " "
+format = 'on [$symbol$context( \($namespace\))]($style) '
+style = "bold green"
+
+[aws]
+symbol = " "
+format = 'on [$symbol$profile(\($region\))]($style) '
+style = "bold yellow"
+
+[nix_shell]
+symbol = " "
+format = 'via [$symbol$state( \($name\))]($style) '
+style = "bold blue"
+
+[conda]
+symbol = " "
+format = 'via [$symbol$environment]($style) '
+style = "bold green"
+
+[memory_usage]
+symbol = " "
+format = 'via [$symbol${ram_pct}]($style) '
+style = "bold white"
+threshold = 75
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration](bold yellow) "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+format = "$symbol "
+
+[time]
+disabled = false
+format = '🕙[\[ $time \]]($style) '
+time_format = "%T"
+style = "bold white" 

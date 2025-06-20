@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -e
+
+{{- $host := index .data .chezmoi.hostname -}}
+PKG_FILE="{{ .chezmoi.sourceDir }}/.chezmoidata/packages.yaml"
+
+# Install CLI packages
+cli_pkgs=$(yq e '.linux.cli[]' "$PKG_FILE")
+if [ -n "$cli_pkgs" ]; then
+  sudo apt-get update
+  sudo apt-get install -y $cli_pkgs
+fi
+
+# Install GUI packages if not headless
+{{- if not $host.headless -}}
+gui_pkgs=$(yq e '.linux.gui[]' "$PKG_FILE")
+if [ -n "$gui_pkgs" ]; then
+  sudo apt-get install -y $gui_pkgs
+fi
+{{- end -}}
+
+echo "✅ Package installation complete" 

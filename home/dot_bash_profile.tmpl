@@ -1,6 +1,12 @@
-# ~/.bash_profile (from dot_bash_profile.tmpl)
+# ~/.bash_profile.tmpl
+{{- $host := index .data .chezmoi.hostname -}}
 
-# If this is Bash (not already Zsh), hop into zsh as a login shell
-if [ -n "${BASH_VERSION-}" ] && [ -z "${ZSH_VERSION-}" ]; then
-  exec zsh -l
+# Set timezone if specified
+{{- if $host.timezone -}}
+export TZ="{{ $host.timezone }}"
+{{- end -}}
+
+# Source .bashrc if it exists
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
 fi
