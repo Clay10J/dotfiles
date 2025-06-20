@@ -50,10 +50,6 @@ if ! command -v git >/dev/null 2>&1; then
     MISSING_DEPS+=("git")
 fi
 
-if ! command -v yq >/dev/null 2>&1; then
-    MISSING_DEPS+=("yq")
-fi
-
 if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     log_warning "Missing dependencies: ${MISSING_DEPS[*]}"
     log_info "Installing missing dependencies..."
@@ -61,7 +57,27 @@ if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     sudo apt-get install -y "${MISSING_DEPS[@]}"
 fi
 
-# 3) Install or update chezmoi
+# 3) Install yq if not available
+if ! command -v yq >/dev/null 2>&1; then
+    log_info "Installing yq..."
+    YQ_VERSION="v4.45.4"
+    YQ_BINARY="yq_linux_amd64"
+    
+    # Download yq
+    if curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}" -o "/tmp/${YQ_BINARY}"; then
+        # Make it executable and move to local bin
+        chmod +x "/tmp/${YQ_BINARY}"
+        mv "/tmp/${YQ_BINARY}" "$CHEZMOI_INSTALL_DIR/yq"
+        log_success "yq installed successfully"
+    else
+        log_error "Failed to download yq"
+        exit 1
+    fi
+else
+    log_info "yq already installed"
+fi
+
+# 4) Install or update chezmoi
 log_info "Installing chezmoi..."
 if ! command -v chezmoi >/dev/null 2>&1; then
     sh -c "$(curl -fsSL get.chezmoi.io)" -- -b "$CHEZMOI_INSTALL_DIR"
@@ -72,7 +88,7 @@ else
     log_success "chezmoi updated successfully"
 fi
 
-# 4) Initialize and apply dotfiles
+# 5) Initialize and apply dotfiles
 log_info "Initializing dotfiles..."
 "$CHEZMOI_INSTALL_DIR/chezmoi" init --apply https://github.com/Clay10J/dotfiles.git
 
