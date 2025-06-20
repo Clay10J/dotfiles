@@ -1,18 +1,33 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
+
+echo "🔐 Setting up SSH key generation..."
 
 # Ensure 1Password CLI is available
 if ! command -v op >/dev/null 2>&1; then
-  echo "⚠️  1Password CLI (op) not found; skipping SSH key setup"
-  exit 0
+  echo "❌ 1Password CLI (op) not found; SSH key setup failed"
+  echo "   This may indicate that 1Password CLI installation failed"
+  exit 1
 fi
 
-item_title="$(hostname) SSH Key"
+item_title="{{ .chezmoi.hostname }} SSH Key"
 
-# 1) If the SSH_KEY item doesn’t exist yet, create it (this will generate an ed25519 pair)
+# Check if we're authenticated with 1Password
+if ! op account list >/dev/null 2>&1; then
+  echo "❌ Not authenticated with 1Password; SSH key setup failed"
+  echo "   Please ensure 1Password sign-in completed successfully"
+  exit 1
+fi
+
+# 1) If the SSH_KEY item doesn't exist yet, create it (this will generate an ed25519 pair)
 if ! op item get "$item_title" >/dev/null 2>&1; then
   echo "🔐 Generating new SSH key in 1Password: $item_title"
-  op item create \
-    --title "$item_title" \
-    --category SSH_KEY
+  if op item create --title "$item_title" --category SSH_KEY; then
+    echo "✅ SSH key created successfully in 1Password"
+  else
+    echo "❌ Failed to create SSH key in 1Password"
+    exit 1
+  fi
+else
+  echo "✅ SSH key already exists in 1Password: $item_title"
 fi

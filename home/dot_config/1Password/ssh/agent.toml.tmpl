@@ -1,5 +1,12 @@
+{{- $host := index .data .chezmoi.hostname -}}
+{{- $sshAgent := true -}}
+
+{{- if $host -}}
+  {{- $sshAgent = $host.sshAgent -}}
+{{- end -}}
+
 {{- /* Only emit this block when sshAgent is enabled for the host */ -}}
-{{- if default false .host.sshAgent }}
+{{- if $sshAgent }}
 
 # 1Password SSH Agent Key Curation for {{ .chezmoi.hostname }}
 # Only load these keys when sshAgent = true in chezmoi.toml

@@ -1,11 +1,20 @@
 # ~/.ssh/config.tmpl
 
+{{- $host := index .data .chezmoi.hostname -}}
+{{- $sshUser := .chezmoi.user -}}
+{{- $sshAgent := true -}}
+
+{{- if $host -}}
+  {{- $sshUser = $host.sshUser -}}
+  {{- $sshAgent = $host.sshAgent -}}
+{{- end -}}
+
 Host *
-  User {{ default "root" .host.sshUser }}
+  User {{ $sshUser }}
   HostKeyAlgorithms +ssh-ed25519
 
-{{- if default false .host.sshAgent -}}
-# — 1Password SSH agent on “commander” —
+{{- if $sshAgent -}}
+# — 1Password SSH agent on "{{ .chezmoi.hostname }}" —
   IdentityAgent {{ print .chezmoi.homeDir }}/.1password/agent.sock
   AddKeysToAgent yes
   ForwardAgent yes

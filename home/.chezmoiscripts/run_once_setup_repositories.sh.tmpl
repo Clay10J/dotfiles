@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "📦 Setting up third-party repositories..."
+
+# Brave Browser repository
+if [[ ! -f /etc/apt/sources.list.d/brave-browser-release.list ]]; then
+    echo "🌐 Adding Brave Browser repository..."
+    if curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; then
+        if echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list; then
+            echo "✅ Brave repository added successfully"
+        else
+            echo "❌ Failed to add Brave repository to sources.list"
+            exit 1
+        fi
+    else
+        echo "❌ Failed to download Brave GPG key"
+        exit 1
+    fi
+else
+    echo "ℹ️  Brave repository already configured"
+fi
+
+# 1Password CLI repository
+if [[ ! -f /etc/apt/sources.list.d/1password.list ]]; then
+    echo "🔐 Adding 1Password CLI repository..."
+    
+    # Determine Debian/Ubuntu architecture (amd64, arm64, etc.)
+    ARCH="$(dpkg --print-architecture)"
+    echo "   Detected architecture: $ARCH"
+    
+    # Import the 1Password GPG key
+    if curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg; then
+        echo "   ✅ 1Password GPG key imported"
+    else
+        echo "❌ Failed to import 1Password GPG key"
+        exit 1
+    fi
+    
+    # Add the official 1Password APT repository
+    if echo "deb [arch=${ARCH} signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/${ARCH} stable main" | sudo tee /etc/apt/sources.list.d/1password.list; then
+        echo "   ✅ 1Password repository added to sources.list"
+    else
+        echo "❌ Failed to add 1Password repository to sources.list"
+        exit 1
+    fi
+    
+    # Configure debsig policy so the package is verified on install
+    if sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/; then
+        if curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol; then
+            if sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22; then
+                if curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg; then
+                    echo "   ✅ 1Password debsig policy configured"
+                else
+                    echo "❌ Failed to configure 1Password debsig policy"
+                    exit 1
+                fi
+            else
+                echo "❌ Failed to create debsig keyrings directory"
+                exit 1
+            fi
+        else
+            echo "❌ Failed to download 1Password debsig policy"
+            exit 1
+        fi
+    else
+        echo "❌ Failed to create debsig policies directory"
+        exit 1
+    fi
+    
+    echo "✅ 1Password repository added successfully"
+else
+    echo "ℹ️  1Password repository already configured"
+fi
+
+# Update package lists after adding repositories
+echo "🔄 Updating package lists..."
+if sudo apt-get update; then
+    echo "✅ Package lists updated successfully"
+else
+    echo "❌ Failed to update package lists"
+    echo "   This may indicate repository configuration issues"
+    exit 1
+fi
+
+echo "✅ Repository setup completed successfully" 

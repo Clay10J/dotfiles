@@ -10,7 +10,13 @@ packages:
       - tree
       - jq
       - fd-find
+      - curl
+      - wget
+      - git
+      - unzip
+      - 1password-cli
     gui:
+      - brave-browser
       - vlc
       - gnome-terminal
-      - code
+      - 1password

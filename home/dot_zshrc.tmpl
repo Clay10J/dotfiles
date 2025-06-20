@@ -29,13 +29,16 @@ compinit
 alias bat='batcat'
 alias cleanchezmoi='rm -rf ~/.local/share/chezmoi ~/.config/chezmoi && chezmoi state delete-bucket --bucket=scriptState && chezmoi state delete-bucket --bucket=entryState'
 
-# 4) Host-specific “update” alias (only on non-headless hosts) ─
-{{- with index .data .chezmoi.hostname -}}
-  {{- if not .headless -}}
+# 4) Host-specific "update" alias (only on non-headless hosts) ─
+{{- $host := index .data .chezmoi.hostname -}}
+{{- $headless := false -}}
+{{- if $host -}}
+  {{- $headless = $host.headless -}}
+{{- end -}}
+{{- if not $headless -}}
 if command -v apt-get >/dev/null; then
   alias updateit='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
 fi
-  {{- end -}}
 {{- end -}}
 
 # 5) Tool inits ───────────────────────────────────────────

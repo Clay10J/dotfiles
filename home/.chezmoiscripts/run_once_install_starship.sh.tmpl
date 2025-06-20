@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 set -e
-if ! command -v starship >/dev/null 2>&1; then
-  curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
+
+echo "🚀 Installing starship prompt..."
+
+# Check if starship is already installed
+if command -v starship >/dev/null 2>&1; then
+    echo "starship already installed"
+    exit 0
 fi
+
+# Install starship
+sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
+
+echo "✅ starship installed successfully"

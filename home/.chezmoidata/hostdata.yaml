@@ -1,2 +1,28 @@
+# Host-specific configuration
+# Each host can have different settings based on their purpose and capabilities
+
+# Specific configuration for commander
 commander:
-  headless: false
+  # System characteristics
+  headless: false # true for servers/VMs without GUI
+  username: "clay"
+  email: "clay@example.com"
+
+  # SSH configuration
+  sshAgent: true
+  sshUser: "clay"
+# Template for future hosts
+# work-laptop:
+#   headless: false
+#   username: "clay"
+#   email: "clay@company.com"
+#   sshAgent: true
+#   sshUser: "clay"
+
+# Template for headless VMs
+# vm-server:
+#   headless: true
+#   username: "clay"
+#   email: "clay@example.com"
+#   sshAgent: true
+#   sshUser: "clay"

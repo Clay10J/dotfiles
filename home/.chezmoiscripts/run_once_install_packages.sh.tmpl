@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "📦 Installing packages from packages.yaml..."
+
+# Get the path to the packages.yaml file
+PKG_FILE="{{ .chezmoi.sourceDir }}/.chezmoidata/packages.yaml"
+
+if [[ ! -f "$PKG_FILE" ]]; then
+    echo "❌ packages.yaml not found at $PKG_FILE"
+    exit 1
+fi
+
+# Check if yq is available
+if ! command -v yq >/dev/null 2>&1; then
+    echo "❌ yq is required but not installed"
+    echo "   Please install yq: sudo apt install yq"
+    exit 1
+fi
+
+# Install CLI packages
+echo "🔧 Installing CLI packages..."
+CLI_PACKAGES=$(yq e '.packages.linux.cli[]' "$PKG_FILE" 2>/dev/null || echo "")
+
+if [[ -n "$CLI_PACKAGES" ]]; then
+    MISSING_CLI=()
+    for pkg in $CLI_PACKAGES; do
+        if [[ -n "$pkg" ]] && ! dpkg -s "$pkg" >/dev/null 2>&1; then
+            MISSING_CLI+=("$pkg")
+        fi
+    done
+    
+    if [[ ${#MISSING_CLI[@]} -gt 0 ]]; then
+        echo "📥 Installing missing CLI packages: ${MISSING_CLI[*]}"
+        if sudo apt-get install -y "${MISSING_CLI[@]}"; then
+            echo "✅ CLI packages installed successfully"
+        else
+            echo "❌ Failed to install CLI packages: ${MISSING_CLI[*]}"
+            exit 1
+        fi
+    else
+        echo "✅ All CLI packages already installed"
+    fi
+else
+    echo "⚠️  No CLI packages found in packages.yaml"
+fi
+
+# Install GUI packages (only if GUI is available)
+if [[ -n "$DISPLAY" ]] || [[ -n "$WAYLAND_DISPLAY" ]]; then
+    echo "🖥️  Installing GUI packages..."
+    GUI_PACKAGES=$(yq e '.packages.linux.gui[]' "$PKG_FILE" 2>/dev/null || echo "")
+    
+    if [[ -n "$GUI_PACKAGES" ]]; then
+        MISSING_GUI=()
+        for pkg in $GUI_PACKAGES; do
+            if [[ -n "$pkg" ]] && ! dpkg -s "$pkg" >/dev/null 2>&1; then
+                MISSING_GUI+=("$pkg")
+            fi
+        done
+        
+        if [[ ${#MISSING_GUI[@]} -gt 0 ]]; then
+            echo "📥 Installing missing GUI packages: ${MISSING_GUI[*]}"
+            if sudo apt-get install -y "${MISSING_GUI[@]}"; then
+                echo "✅ GUI packages installed successfully"
+            else
+                echo "❌ Failed to install GUI packages: ${MISSING_GUI[*]}"
+                exit 1
+            fi
+        else
+            echo "✅ All GUI packages already installed"
+        fi
+    else
+        echo "⚠️  No GUI packages found in packages.yaml"
+    fi
+else
+    echo "ℹ️  Skipping GUI packages (no display detected)"
+fi
+
+# Verify critical packages
+echo "🔍 Verifying critical packages..."
+CRITICAL_PACKAGES=("git" "zsh" "curl")
+for pkg in "${CRITICAL_PACKAGES[@]}"; do
+    if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+        echo "❌ Critical package '$pkg' is not installed"
+        exit 1
+    fi
+done
+
+# Check if fd-find is available (might be named differently)
+if command -v fdfind >/dev/null 2>&1; then
+    echo "✅ fd-find is available as 'fdfind'"
+elif command -v fd >/dev/null 2>&1; then
+    echo "✅ fd-find is available as 'fd'"
+else
+    echo "⚠️  fd-find not found (may be named 'fd' or 'fdfind')"
+fi
+
+echo "✅ Package installation completed" 

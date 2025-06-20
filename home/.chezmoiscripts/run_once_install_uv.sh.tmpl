@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 set -e
-if ! command -v uv >/dev/null 2>&1; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh
+
+echo "🐍 Installing uv Python package manager..."
+
+# Check if uv is already installed
+if command -v uv >/dev/null 2>&1; then
+    echo "uv already installed"
+    exit 0
 fi
+
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+echo "✅ uv installed successfully"
