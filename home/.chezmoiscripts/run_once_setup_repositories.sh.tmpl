@@ -25,9 +25,22 @@ fi
 if [[ ! -f /etc/apt/sources.list.d/1password.list ]]; then
     echo "🔐 Adding 1Password CLI repository..."
     
-    # Determine Debian/Ubuntu architecture (amd64, arm64, etc.)
-    ARCH="$(dpkg --print-architecture)"
-    echo "   Detected architecture: $ARCH"
+    # Determine Debian/Ubuntu architecture and map to 1Password format
+    SYSTEM_ARCH="$(dpkg --print-architecture)"
+    case "$SYSTEM_ARCH" in
+        "amd64"|"x86_64")
+            ARCH="amd64"
+            ;;
+        "arm64"|"aarch64")
+            ARCH="arm64"
+            ;;
+        *)
+            echo "❌ Unsupported architecture: $SYSTEM_ARCH"
+            echo "   1Password supports amd64 and arm64 architectures"
+            exit 1
+            ;;
+    esac
+    echo "   Detected architecture: $SYSTEM_ARCH -> mapped to: $ARCH"
     
     # Import the 1Password GPG key
     if curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg; then
