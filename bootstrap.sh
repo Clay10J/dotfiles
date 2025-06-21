@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# —————— METADATA ——————
+# A version number to bust caches and identify which script is running.
+BOOTSTRAP_VERSION="v1.0.0-debug"
+
+
+# —————— COLORS & LOGGING ——————
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -10,21 +16,22 @@ NC='\033[0m' # No Color
 
 # Logging functions
 log_info() {
-    echo -e "${BLUE}ℹ️  $1${NC}"
+    echo -e "${BLUE}ℹ️  [$BOOTSTRAP_VERSION] $1${NC}"
 }
 
 log_success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}✅ [$BOOTSTRAP_VERSION] $1${NC}"
 }
 
 log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
+    echo -e "${YELLOW}⚠️  [$BOOTSTRAP_VERSION] $1${NC}"
 }
 
 log_error() {
-    echo -e "${RED}❌ $1${NC}"
+    echo -e "${RED}❌ [$BOOTSTRAP_VERSION] $1${NC}"
 }
 
+# —————— SCRIPT LOGIC ——————
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
    log_error "This script should not be run as root. Please run as a regular user."
