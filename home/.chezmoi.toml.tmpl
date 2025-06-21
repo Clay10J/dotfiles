@@ -1,6 +1,6 @@
 [data]
-    email = "{{ .email | secret }}"
-    onepassword_account = "{{ .onepassword_account | secret }}"
+    email = "{{ .email | promptString "Your 1Password email address" | secret }}"
+    onepassword_account = "{{ .onepassword_account | promptString "1Password sign-in address (e.g., my.1password.com)" | secret }}"
 
 [edit]
     command = "cursor"
