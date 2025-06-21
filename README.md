@@ -25,7 +25,13 @@ A robust, automated dotfiles setup for Linux using `chezmoi`. This setup provide
 
 ### 2. Bootstrap Installation
 
-Run this command on a fresh Linux system:
+**Prerequisite**: Ensure `curl` is installed on your system. On most Linux distributions, it's available by default, but if not:
+
+```bash
+sudo apt update && sudo apt install curl
+```
+
+Then run this command on a fresh Linux system:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Clay10J/dotfiles/main/bootstrap.sh | bash
