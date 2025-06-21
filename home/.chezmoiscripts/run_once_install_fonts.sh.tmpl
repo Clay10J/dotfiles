@@ -26,23 +26,23 @@ main() {
         log_info "Downloading MapleMono NF complete family..."
         cd "$FONT_DIR"
         curl -fLo "MapleMono-NF.zip" \
-            "https://github.com/subframe7536/Maple-font/releases/download/v8.0.0/MapleMono-NF.zip"
+            "https://github.com/subframe7536/Maple-font/releases/download/v7.3/MapleMono-NF.zip"
         unzip -j "MapleMono-NF.zip" "*.ttf" && rm "MapleMono-NF.zip"
         log_success "MapleMono NF complete family installed."
     else
         log_info "MapleMono NF already installed."
     fi
     
-    # Install CaskaydiaCove Nerd Font (complete family)
-    if [[ ! -f "$FONT_DIR/CaskaydiaCoveNerdFont-Regular.ttf" ]]; then
-        log_info "Downloading CaskaydiaCove Nerd Font complete family..."
+    # Install CascadiaCode Nerd Font (complete family)
+    if [[ ! -f "$FONT_DIR/CascadiaCodeNerdFont-Regular.ttf" ]]; then
+        log_info "Downloading CascadiaCode Nerd Font complete family..."
         cd "$FONT_DIR"
-        curl -fLo "CaskaydiaCove-NF.zip" \
-            "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/CaskaydiaCove.zip"
-        unzip -j "CaskaydiaCove-NF.zip" "*.ttf" && rm "CaskaydiaCove-NF.zip"
-        log_success "CaskaydiaCove Nerd Font complete family installed."
+        curl -fLo "CascadiaCode-NF.zip" \
+            "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/CascadiaCode.zip"
+        unzip -j "CascadiaCode-NF.zip" "*.ttf" && rm "CascadiaCode-NF.zip"
+        log_success "CascadiaCode Nerd Font complete family installed."
     else
-        log_info "CaskaydiaCove Nerd Font already installed."
+        log_info "CascadiaCode Nerd Font already installed."
     fi
     
     # Install Iosevka Nerd Font (complete family)
@@ -55,6 +55,18 @@ main() {
         log_success "Iosevka Nerd Font complete family installed."
     else
         log_info "Iosevka Nerd Font already installed."
+    fi
+    
+    # Install CaskaydiaCove Nerd Font (complete family)
+    if [[ ! -f "$FONT_DIR/CaskaydiaCoveNerdFont-Regular.ttf" ]]; then
+        log_info "Downloading CaskaydiaCove Nerd Font complete family..."
+        cd "$FONT_DIR"
+        curl -fLo "CaskaydiaCove-NF.zip" \
+            "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/CascadiaCode.zip"
+        unzip -j "CaskaydiaCove-NF.zip" "*.ttf" && rm "CaskaydiaCove-NF.zip"
+        log_success "CaskaydiaCove Nerd Font complete family installed."
+    else
+        log_info "CaskaydiaCove Nerd Font already installed."
     fi
     
     # Refresh font cache
