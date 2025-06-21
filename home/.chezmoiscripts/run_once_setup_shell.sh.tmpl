@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This script sets zsh as the default shell
+# It's a 'run_once' script because this only needs to be done once
+
+# —————— COLORS & LOGGING ——————
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+log_info() { echo -e "\n${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+
+# —————— SCRIPT LOGIC ——————
+main() {
+    log_info "Setting up zsh as default shell..."
+
+    # Set zsh as default shell
+    if [[ "$SHELL" != "/bin/zsh" ]]; then
+        log_info "Setting zsh as default shell..."
+        chsh -s /bin/zsh
+        log_success "zsh set as default shell. Please log out and back in for changes to take effect."
+    else
+        log_info "zsh is already the default shell."
+    fi
+
+    log_success "Shell setup complete!"
+}
+
+main "$@" 

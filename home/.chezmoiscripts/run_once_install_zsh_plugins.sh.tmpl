@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This script installs zsh plugins for enhanced functionality
+# It's a 'run_once' script because plugins only need to be installed once
+
+# —————— COLORS & LOGGING ——————
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+log_info() { echo -e "\n${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+
+# —————— SCRIPT LOGIC ——————
+main() {
+    log_info "Installing zsh plugins..."
+
+    # Create zsh plugins directory
+    ZSH_PLUGINS_DIR="$HOME/.zsh"
+    mkdir -p "$ZSH_PLUGINS_DIR"
+
+    # Install zsh-syntax-highlighting
+    if [[ ! -d "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting" ]]; then
+        log_info "Installing zsh-syntax-highlighting..."
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting"
+        log_success "zsh-syntax-highlighting installed."
+    else
+        log_info "zsh-syntax-highlighting already installed."
+    fi
+
+    # Install zsh-autosuggestions
+    if [[ ! -d "$ZSH_PLUGINS_DIR/zsh-autosuggestions" ]]; then
+        log_info "Installing zsh-autosuggestions..."
+        git clone https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_PLUGINS_DIR/zsh-autosuggestions"
+        log_success "zsh-autosuggestions installed."
+    else
+        log_info "zsh-autosuggestions already installed."
+    fi
+
+    log_success "Zsh plugins installation complete!"
+}
+
+main "$@" 

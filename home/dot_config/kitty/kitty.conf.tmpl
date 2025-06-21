@@ -1,0 +1,98 @@
+# Kitty Terminal Configuration
+# This file is managed by chezmoi
+
+# Font configuration
+font_family Iosevka Nerd Font
+font_size 12.0
+bold_font auto
+italic_font auto
+bold_italic_font auto
+
+# Window configuration
+window_padding_width 10
+window_margin_width 0
+window_border_width 0
+window_rounded_corners yes
+
+# Tab bar configuration
+tab_bar_style powerline
+tab_powerline_style slanted
+tab_title_template "{index}: {title}"
+
+# Color scheme (using a modern dark theme)
+background #1a1a1a
+background_opacity 0.9
+foreground #d4d4d4
+cursor #d4d4d4
+cursor_shape block
+cursor_blink_interval 0.5
+
+# Selection colors
+selection_background #264f78
+selection_foreground #d4d4d4
+
+# Color palette
+color0 #000000
+color1 #cd3131
+color2 #0dbc79
+color3 #e5e510
+color4 #2472c8
+color5 #bc3fbc
+color6 #11a8cd
+color7 #e5e5e5
+color8 #666666
+color9 #f14c4c
+color10 #23d18b
+color11 #f5f543
+color12 #3b8eea
+color13 #d670d6
+color14 #29b8db
+color15 #ffffff
+
+# Keyboard shortcuts
+map ctrl+shift+equal change_font_size all +1.0
+map ctrl+shift+minus change_font_size all -1.0
+map ctrl+shift+0 change_font_size all 0
+
+# Copy to clipboard
+map ctrl+shift+c copy_to_clipboard
+map ctrl+shift+v paste_from_clipboard
+
+# Tab management
+map ctrl+shift+t new_tab_with_cwd
+map ctrl+shift+w close_tab
+map ctrl+shift+right next_tab
+map ctrl+shift+left previous_tab
+
+# Window management
+map ctrl+shift+enter new_window_with_cwd
+map ctrl+shift+w close_window
+
+# Enable shell integration
+shell_integration enabled
+
+# Mouse support
+mouse_hide_interval 3.0
+focus_follows_mouse yes
+
+# Performance
+repaint_delay 10
+input_delay 3
+sync_to_monitor yes
+
+# Terminal bell
+enable_audio_bell no
+visual_bell_duration 0.3
+visual_bell_color #ff5555
+
+# URL handling
+url_style double
+open_url_with default
+copy_on_select yes
+
+# Scrollback
+scrollback_lines 10000
+scrollback_pager less --chop-long-lines --RAW-CONTROL-CHARS +INPUT_LINE_NUMBER
+
+# Shell integration
+shell_integration enabled 

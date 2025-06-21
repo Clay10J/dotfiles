@@ -1,0 +1,43 @@
+# SSH Configuration
+# This file is managed by chezmoi
+
+# Global settings
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    AddKeysToAgent yes
+    IdentitiesOnly yes
+
+# GitHub
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+# GitLab (uncomment if you use GitLab)
+# Host gitlab.com
+#     HostName gitlab.com
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519
+#     IdentitiesOnly yes
+
+# Development servers (uncomment and customize for your dev servers)
+# Host dev-*
+#     User {{ .chezmoi.username }}
+#     IdentityFile ~/.ssh/id_ed25519
+#     IdentitiesOnly yes
+
+# Production servers (uncomment and customize for your prod servers)
+# Host prod-*
+#     User {{ .chezmoi.username }}
+#     IdentityFile ~/.ssh/id_ed25519
+#     IdentitiesOnly yes
+#     ServerAliveInterval 30
+#     ServerAliveCountMax 6
+
+# Local development (uncomment if you SSH to localhost)
+# Host localhost
+#     User {{ .chezmoi.username }}
+#     IdentityFile ~/.ssh/id_ed25519
+#     IdentitiesOnly yes 

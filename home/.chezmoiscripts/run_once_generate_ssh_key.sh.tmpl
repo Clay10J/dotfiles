@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Generate SSH key using 1Password CLI
+# This script creates an SSH key pair directly in 1Password
+
+ITEM_TITLE="{{ .chezmoi.hostname }} SSH Key"
+
+# Generate SSH key in 1Password
+echo "Generating SSH key pair in 1Password..."
+op item create \
+    --title "$ITEM_TITLE" \
+    --category SSH_KEY \
+    --vault Personal
+
+echo "SSH key generated successfully in 1Password!"
+echo ""
+echo "The SSH key has been created in your Personal vault with the title:"
+echo "'$ITEM_TITLE'"
+echo ""
+echo "You can now use this key with your SSH configuration." 

@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This script installs all packages defined in packages.yaml
+# It's a 'run_once' script because packages only need to be installed once
+
+# —————— COLORS & LOGGING ——————
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+log_info() { echo -e "\n${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+
+# —————— PACKAGE LISTS (from chezmoi template) ——————
+CORE_PACKAGES=(
+{{ range .core }}
+    "{{ . }}"
+{{ end }}
+)
+
+{{ if not .headless }}
+GUI_PACKAGES=(
+{{ range .gui }}
+    "{{ . }}"
+{{ end }}
+)
+{{ end }}
+
+# —————— REPOSITORY CONFIGURATION ——————
+{{ range .repositories }}
+# {{ .name }}
+REPO_{{ .name | replace " " "_" | upper }}_KEY_URL="{{ .key_url }}"
+REPO_{{ .name | replace " " "_" | upper }}_REPO_URL="{{ .repo_url }}"
+REPO_{{ .name | replace " " "_" | upper }}_KEYRING_PATH="{{ .keyring_path }}"
+REPO_{{ .name | replace " " "_" | upper }}_LIST_PATH="{{ .list_path }}"
+{{ end }}
+
+# —————— SCRIPT LOGIC ——————
+main() {
+    log_info "Installing packages..."
+
+    # Add repositories first
+    log_info "Adding external repositories..."
+{{ range .repositories }}
+    log_info "Adding repository: {{ .name }}"
+    curl -sS "{{ .key_url }}" | sudo gpg --dearmor --output "{{ .keyring_path }}"
+    echo "{{ .repo_url }}" | sudo tee "{{ .list_path }}" > /dev/null
+{{ end }}
+
+    # Update package lists
+    log_info "Updating package lists..."
+    sudo apt-get update -qq
+
+    # Install core packages
+    if [[ ${#CORE_PACKAGES[@]} -gt 0 ]]; then
+        log_info "Installing core packages..."
+        sudo apt-get install -y -qq "${CORE_PACKAGES[@]}"
+        log_success "Core packages installed: ${CORE_PACKAGES[*]}"
+    fi
+
+    # Install GUI packages (only if not headless)
+{{ if not .headless }}
+    if [[ ${#GUI_PACKAGES[@]} -gt 0 ]]; then
+        log_info "Installing GUI packages..."
+        sudo apt-get install -y -qq "${GUI_PACKAGES[@]}"
+        log_success "GUI packages installed: ${GUI_PACKAGES[*]}"
+    fi
+{{ else }}
+    log_info "Skipping GUI packages (headless machine)"
+{{ end }}
+
+    log_success "All packages installed successfully!"
+}
+
+main "$@" 
