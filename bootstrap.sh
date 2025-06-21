@@ -118,10 +118,10 @@ fi
 # 2. Second apply: Re-reads data (including new secrets) and successfully
 #    renders all templates.
 log_info "Running first apply to execute installation scripts..."
-"$CHEZMOI_INSTALL_DIR/chezmoi" apply || true
+"$CHEZMOI_INSTALL_DIR/chezmoi" apply -v || true
 
 log_info "Running second apply to render templates with new data..."
-"$CHEZMOI_INSTALL_DIR/chezmoi" apply
+"$CHEZMOI_INSTALL_DIR/chezmoi" apply -v
 
 log_success "Bootstrap complete! 🎉"
 log_info "Next steps:"
