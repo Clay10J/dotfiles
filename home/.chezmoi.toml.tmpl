@@ -3,22 +3,27 @@ dataDir = ".chezmoidata"
 scriptsDir = ".chezmoiscripts"
 
 # —————— hooks ——————
-
-[hooks.init.after]
-commands = [
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_set_git_remote.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_setup_repositories.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_packages.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_signin_1password.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_generate_ssh_key.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_fonts.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_kitty.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_starship.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_install_uv.sh"
-]
+# All scripts are run in the `apply` hook. This is because on a fresh
+# bootstrap, the `init` command does not have a config yet and cannot run
+# init hooks. The first `apply` creates the config, and subsequent applies
+# will run the scripts below.
 
 [hooks.apply.after]
 commands = [
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_fix_ssh_permissions.sh",
-  "{{ .chezmoi.sourceDir }}/.chezmoiscripts/run_once_set_default_shell.sh"
+  # Setup and Installation
+  ".chezmoiscripts/run_once_set_git_remote.sh",
+  ".chezmoiscripts/run_once_setup_repositories.sh",
+  ".chezmoiscripts/run_once_install_packages.sh",
+  ".chezmoiscripts/run_once_install_fonts.sh",
+  ".chezmoiscripts/run_once_install_kitty.sh",
+  ".chezmoiscripts/run_once_install_starship.sh",
+  ".chezmoiscripts/run_once_install_uv.sh",
+  
+  # Secrets and Permissions
+  ".chezmoiscripts/run_once_signin_1password.sh",
+  ".chezmoiscripts/run_once_generate_ssh_key.sh",
+  ".chezmoiscripts/run_once_fix_ssh_permissions.sh",
+
+  # Final Configuration
+  ".chezmoiscripts/run_once_set_default_shell.sh"
 ]

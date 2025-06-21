@@ -90,7 +90,20 @@ fi
 
 # 5) Initialize and apply dotfiles
 log_info "Initializing dotfiles..."
-"$CHEZMOI_INSTALL_DIR/chezmoi" init --apply https://github.com/Clay10J/dotfiles.git
+"$CHEZMOI_INSTALL_DIR/chezmoi" init https://github.com/Clay10J/dotfiles.git
+
+# Run apply twice to handle a "chicken-and-egg" problem in chezmoi's
+# order of operations. Templates are rendered *before* scripts are run.
+#
+# 1. The first `apply` runs scripts that create secrets (e.g., SSH key in 1P).
+#    It fails to render templates that need those secrets, but we allow failure.
+# 2. The second `apply` re-reads the data (now including the new secrets)
+#    and can successfully render all templates.
+log_info "Running first apply to execute installation scripts..."
+"$CHEZMOI_INSTALL_DIR/chezmoi" apply || true
+
+log_info "Running second apply to render templates with new data..."
+"$CHEZMOI_INSTALL_DIR/chezmoi" apply
 
 log_success "Bootstrap complete! 🎉"
 log_info "Next steps:"
