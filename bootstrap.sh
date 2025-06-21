@@ -38,10 +38,14 @@ main() {
 
     log_info "Starting bootstrap process..."
 
+    # Ensure system time is accurate to prevent apt errors
+    log_info "Synchronizing system time..."
+    sudo timedatectl set-ntp true
+
     # 1. Install basic tools needed for repository setup
-    log_info "Installing basic tools (git, curl, gpg)..."
+    log_info "Installing basic tools (git, gpg)..."
     sudo apt-get update -qq
-    sudo apt-get install -y -qq git curl gpg
+    sudo apt-get install -y -qq git gpg
     log_success "Basic tools installed."
 
     # 2. Add 1Password repository and GPG key
