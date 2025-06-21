@@ -17,8 +17,14 @@ main() {
 
     # Set zsh as default shell
     if [[ "$SHELL" != "/bin/zsh" ]]; then
-        log_info "Setting zsh as default shell..."
-        chsh -s /bin/zsh
+        # Add zsh to /etc/shells if it's not already there
+        if ! grep -q "/bin/zsh" /etc/shells; then
+            log_info "Adding /bin/zsh to /etc/shells..."
+            echo "/bin/zsh" | sudo tee -a /etc/shells
+        fi
+
+        log_info "Setting zsh as default shell for user $USER..."
+        sudo chsh -s /bin/zsh "$USER"
         log_success "zsh set as default shell. Please log out and back in for changes to take effect."
     else
         log_info "zsh is already the default shell."
