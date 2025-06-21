@@ -1,6 +1,11 @@
-{{ if not .headless }}
 #!/usr/bin/env bash
 set -euo pipefail
+
+# Check if this is a headless system
+if [[ "{{ .headless }}" == "true" ]]; then
+    echo "Skipping kitty installation on headless system"
+    exit 0
+fi
 
 # Install Kitty Terminal using official installer
 # This script follows the official kitty installation documentation
@@ -31,9 +36,4 @@ sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.loca
 # Make xdg-terminal-exec use kitty
 echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 
-echo "Kitty Terminal installed successfully with desktop integration"
-{{ else }}
-#!/usr/bin/env bash
-# This script is intentionally empty on headless systems
-echo "Skipping kitty installation on headless system"
-{{ end }} 
+echo "Kitty Terminal installed successfully with desktop integration" 
