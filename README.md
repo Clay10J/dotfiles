@@ -13,7 +13,17 @@ A robust, automated dotfiles setup for Linux using `chezmoi`. This setup provide
 
 ## Quick Start
 
-### 1. Bootstrap Installation
+### 1. SSH Key Setup (Required First)
+
+**Before running the bootstrap script**, you need to create SSH keys in 1Password:
+
+1. **Open 1Password**
+2. **Create a new SSH Key item** in your Personal vault
+3. **Title it**: `[hostname] SSH Key` (e.g., "commander SSH Key")
+4. **Generate a new SSH key pair** using 1Password's built-in generator
+5. **Copy the public key** and add it to GitHub/GitLab/etc.
+
+### 2. Bootstrap Installation
 
 Run this command on a fresh Linux system:
 
@@ -26,15 +36,16 @@ This will:
 - Install essential tools (git, curl, gpg, 1password-cli)
 - Install chezmoi
 - Initialize and apply the dotfiles configuration
+- Create SSH files from your 1Password keys
 
-### 2. First-Time Setup
+### 3. First-Time Setup
 
 On first run, you'll be prompted to:
 
 - Sign in to 1Password (email and account UUID)
 - Provide your Git name and email (if different from 1Password email)
 
-### 3. Manual Steps
+### 4. Manual Steps
 
 After the automated setup, you may want to:
 
@@ -184,50 +195,4 @@ Edit `home/.chezmoidata/packages.yaml` to add/remove packages.
 
 - Shell config: `home/dot_zshrc.tmpl`
 - Git config: `home/dot_gitconfig.tmpl`
-- Starship config: `home/dot_config/starship.toml.tmpl`
-
-### Adding Secrets
-
-Use chezmoi's secret management:
-
-```bash
-chezmoi add-templated-secret <name>
-```
-
-## Troubleshooting
-
-### Fonts Not Showing
-
-1. Restart your terminal
-2. Check terminal font settings
-3. Run `fc-cache -fv` to refresh font cache
-
-### 1Password Issues
-
-1. Ensure you're signed in: `op account list`
-2. Check account configuration in `home/.chezmoi.toml.tmpl`
-
-### Zsh Not Default
-
-```bash
-chsh -s /bin/zsh
-```
-
-## Maintenance
-
-### Updating
-
-```bash
-chezmoi update
-chezmoi apply
-```
-
-### Adding New Machines
-
-1. Run the bootstrap script
-2. Provide 1Password credentials when prompted
-3. Set up any machine-specific configurations
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
+- Starship config: `
