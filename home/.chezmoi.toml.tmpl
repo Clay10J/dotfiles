@@ -1,4 +1,11 @@
+[edit]
+    dotfiles = true
+
+{{- /* Only enable the 1Password integration if the 'op' CLI is installed */}}
+{{- if lookPath "op" }}
 passwordManager = "1password"
+{{- end }}
+
 dataDir = ".chezmoidata"
 scriptsDir = ".chezmoiscripts"
 
