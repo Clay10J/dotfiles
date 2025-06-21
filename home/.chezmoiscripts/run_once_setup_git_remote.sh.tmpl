@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+# Where chezmoi cloned your repo
+REPO_DIR="{{ .chezmoi.sourceDir }}"
+
+# Only run if we're still using the HTTPS URL
+pushd "$REPO_DIR" >/dev/null
+current="$(git remote get-url origin)"
+if printf '%s\n' "$current" | grep -q '^https://github.com/Clay10J/dotfiles.git$'; then
+  echo "🔀 Switching origin to SSH"
+  git remote set-url origin git@github.com:Clay10J/dotfiles.git
+fi
+popd >/dev/null 

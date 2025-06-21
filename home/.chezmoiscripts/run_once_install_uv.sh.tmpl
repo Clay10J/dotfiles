@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This script installs uv (Python package manager by Astral)
+# It's a 'run_once' script because uv only needs to be installed once
+
+# —————— COLORS & LOGGING ——————
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+log_info() { echo -e "\n${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+
+# —————— SCRIPT LOGIC ——————
+main() {
+    if command -v uv >/dev/null 2>&1; then
+        log_info "uv is already installed."
+        exit 0
+    fi
+
+    log_info "Installing uv (Python package manager by Astral)..."
+    
+    # Install uv using the official install script
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    log_success "uv installed successfully!"
+    log_info "You may need to restart your shell or run 'source ~/.bashrc' to use uv."
+}
+
+main "$@" 

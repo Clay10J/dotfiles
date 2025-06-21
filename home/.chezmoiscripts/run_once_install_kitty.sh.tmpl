@@ -1,0 +1,39 @@
+{{ if not .headless }}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install Kitty Terminal using official installer
+# This script follows the official kitty installation documentation
+
+# Check if kitty is already installed
+if command -v kitty >/dev/null 2>&1; then
+    echo "Kitty is already installed"
+    exit 0
+fi
+
+# Install kitty using the official installer
+echo "Installing Kitty Terminal using official installer..."
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+
+# Create symbolic links to add kitty and kitten to PATH
+echo "Creating symbolic links..."
+ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
+
+# Desktop integration (following official docs)
+echo "Setting up desktop integration..."
+# Place the kitty.desktop file
+cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
+
+# Update the paths to kitty and its icon in the desktop file
+sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty.desktop
+sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty.desktop
+
+# Make xdg-terminal-exec use kitty
+echo 'kitty.desktop' > ~/.config/xdg-terminals.list
+
+echo "Kitty Terminal installed successfully with desktop integration"
+{{ else }}
+#!/usr/bin/env bash
+# This script is intentionally empty on headless systems
+echo "Skipping kitty installation on headless system"
+{{ end }} 
