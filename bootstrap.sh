@@ -77,6 +77,28 @@ main() {
         log_info "chezmoi already installed."
     fi
     
+    # Ensure email secret is set for chezmoi
+    if ! "$CHEZMOI_INSTALL_DIR/chezmoi" secret cat email >/dev/null 2>&1; then
+        echo
+        read -rsp "Enter your 1Password email address: " EMAIL
+        echo
+        echo "$EMAIL" | "$CHEZMOI_INSTALL_DIR/chezmoi" secret add email
+        log_success "Email secret added to chezmoi."
+    else
+        log_info "Email secret already set in chezmoi."
+    fi
+
+    # Ensure 1Password account secret is set for chezmoi
+    if ! "$CHEZMOI_INSTALL_DIR/chezmoi" secret cat onepassword_account >/dev/null 2>&1; then
+        echo
+        read -rsp "Enter your 1Password sign-in address (e.g., my.1password.com): " ONEPASSWORD_ACCOUNT
+        echo
+        echo "$ONEPASSWORD_ACCOUNT" | "$CHEZMOI_INSTALL_DIR/chezmoi" secret add onepassword_account
+        log_success "1Password account secret added to chezmoi."
+    else
+        log_info "1Password account secret already set in chezmoi."
+    fi
+
     # 5. Run chezmoi
     log_info "Initializing dotfiles repository from branch '$DOTFILES_BRANCH'..."
     "$CHEZMOI_INSTALL_DIR/chezmoi" init --apply --branch "$DOTFILES_BRANCH" https://github.com/Clay10J/dotfiles.git
