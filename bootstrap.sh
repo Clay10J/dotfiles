@@ -79,17 +79,13 @@ main() {
     
     # 5. Run chezmoi
     log_info "Initializing dotfiles repository from branch '$DOTFILES_BRANCH'..."
-    "$CHEZMOI_INSTALL_DIR/chezmoi" init --branch "$DOTFILES_BRANCH" https://github.com/Clay10J/dotfiles.git
+    "$CHEZMOI_INSTALL_DIR/chezmoi" init --apply --branch "$DOTFILES_BRANCH" https://github.com/Clay10J/dotfiles.git
 
     CHEZMOI_SOURCE_DIR=$("$CHEZMOI_INSTALL_DIR/chezmoi" source-path)
     if [ -d "$CHEZMOI_SOURCE_DIR/.chezmoiscripts" ]; then
         log_info "Making chezmoi scripts executable..."
         find "$CHEZMOI_SOURCE_DIR/.chezmoiscripts" -type f -name "*.sh.tmpl" -exec chmod +x {} +
     fi
-
-    log_info "Applying dotfiles... This may take a few minutes."
-    log_info "(This first pass runs install scripts and may show 'file does not exist' errors, which is normal.)"
-    "$CHEZMOI_INSTALL_DIR/chezmoi" apply || true
 
     log_info "Running a second apply to render templates with newly created secrets..."
     "$CHEZMOI_INSTALL_DIR/chezmoi" apply
