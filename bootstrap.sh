@@ -42,30 +42,24 @@ main() {
     log_info "Synchronizing system time..."
     sudo timedatectl set-ntp true
 
+    # Check for 1Password CLI
+    if ! command -v op >/dev/null 2>&1; then
+        log_error "1Password CLI (op) is not installed. Please install it before running this script."
+        exit 1
+    fi
+
+    if ! op account get >/dev/null 2>&1; then
+        log_error "You are not signed in to 1Password CLI. Please run: eval \$(op signin)"
+        exit 1
+    fi
+
     # 1. Install basic tools needed for repository setup
     log_info "Installing basic tools (git, gpg)..."
     sudo apt-get update -qq
     sudo apt-get install -y -qq git gpg
     log_success "Basic tools installed."
 
-    # 2. Add 1Password repository and GPG key
-    log_info "Adding 1Password repository and GPG key..."
-    curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
-    local arch
-    case "$(dpkg --print-architecture)" in
-        "amd64"|"x86_64") arch="amd64" ;;
-        "arm64"|"aarch64") arch="arm64" ;;
-        *) log_error "Unsupported architecture for 1Password"; exit 1 ;;
-    esac
-    echo "deb [arch=${arch} signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/${arch} stable main" | sudo tee /etc/apt/sources.list.d/1password.list > /dev/null
-
-    # 3. Install 1Password CLI
-    log_info "Installing 1Password CLI..."
-    sudo apt-get update -qq
-    sudo apt-get install -y -qq 1password-cli
-    log_success "1Password CLI installed."
-
-    # 4. Install chezmoi
+    # 2. Install chezmoi
     CHEZMOI_INSTALL_DIR="$HOME/.local/bin"
     if ! command -v chezmoi >/dev/null 2>&1; then
         log_info "Installing chezmoi to $CHEZMOI_INSTALL_DIR..."
@@ -77,29 +71,7 @@ main() {
         log_info "chezmoi already installed."
     fi
     
-    # Ensure email secret is set for chezmoi
-    if ! "$CHEZMOI_INSTALL_DIR/chezmoi" secret cat email >/dev/null 2>&1; then
-        echo
-        read -rsp "Enter your 1Password email address: " EMAIL
-        echo
-        echo "$EMAIL" | "$CHEZMOI_INSTALL_DIR/chezmoi" secret add email
-        log_success "Email secret added to chezmoi."
-    else
-        log_info "Email secret already set in chezmoi."
-    fi
-
-    # Ensure 1Password account secret is set for chezmoi
-    if ! "$CHEZMOI_INSTALL_DIR/chezmoi" secret cat onepassword_account >/dev/null 2>&1; then
-        echo
-        read -rsp "Enter your 1Password sign-in address (e.g., my.1password.com): " ONEPASSWORD_ACCOUNT
-        echo
-        echo "$ONEPASSWORD_ACCOUNT" | "$CHEZMOI_INSTALL_DIR/chezmoi" secret add onepassword_account
-        log_success "1Password account secret added to chezmoi."
-    else
-        log_info "1Password account secret already set in chezmoi."
-    fi
-
-    # 5. Run chezmoi
+    # 3. Run chezmoi
     log_info "Initializing dotfiles repository from branch '$DOTFILES_BRANCH'..."
     "$CHEZMOI_INSTALL_DIR/chezmoi" init --apply --branch "$DOTFILES_BRANCH" https://github.com/Clay10J/dotfiles.git
 

@@ -1,12 +1,5 @@
-[data]
-    email = "{{ .email | secret }}"
-    onepassword_account = "{{ .onepassword_account | secret }}"
-
 [edit]
     command = "cursor"
 
 [template]
-    options = ["missingkey=error"]
-
-[passwordManager]
-    command = "op" 
+    options = ["missingkey=error"] 

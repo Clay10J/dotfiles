@@ -13,7 +13,62 @@ A robust, automated dotfiles setup for Linux using `chezmoi`. This setup provide
 
 ## Quick Start
 
-### 1. SSH Key Setup (Required First)
+### 1. 1Password CLI Installation
+
+You must install and sign in to the 1Password CLI before running the bootstrap script. Follow the instructions for your platform:
+
+### Debian/Ubuntu
+
+```sh
+curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+echo 'deb [signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main' | sudo tee /etc/apt/sources.list.d/1password.list
+sudo apt update && sudo apt install 1password-cli
+```
+
+### Fedora
+
+```sh
+sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
+sudo tee /etc/yum.repos.d/1password.repo <<EOF
+[1password]
+name=1Password Stable Channel
+baseurl=https://downloads.1password.com/linux/rpm/stable/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://downloads.1password.com/linux/keys/1password.asc
+EOF
+sudo dnf install 1password-cli
+```
+
+### Arch Linux
+
+```sh
+yay -S 1password-cli
+# or
+paru -S 1password-cli
+```
+
+### macOS (Homebrew)
+
+```sh
+brew install --cask 1password/tap/1password-cli
+```
+
+### Windows (winget)
+
+```powershell
+winget install --id=AgileBits.1Password.CLI
+```
+
+After installing, sign in to 1Password CLI:
+
+```sh
+eval $(op signin)
+```
+
+If you are not signed in, the bootstrap script will exit with an error.
+
+### 2. SSH Key Setup
 
 **Before running the bootstrap script**, you need to create SSH keys in 1Password:
 
@@ -23,7 +78,7 @@ A robust, automated dotfiles setup for Linux using `chezmoi`. This setup provide
 4. **Generate a new SSH key pair** using 1Password's built-in generator
 5. **Copy the public key** and add it to GitHub/GitLab/etc.
 
-### 2. Bootstrap Installation
+### 3. Bootstrap Installation
 
 **Prerequisite**: Ensure `curl` is installed on your system. On most Linux distributions, it's available by default, but if not:
 
@@ -39,19 +94,19 @@ curl -fsSL https://raw.githubusercontent.com/Clay10J/dotfiles/main/bootstrap.sh 
 
 This will:
 
-- Install essential tools (git, curl, gpg, 1password-cli)
+- Install essential tools (git, curl, gpg)
 - Install chezmoi
 - Initialize and apply the dotfiles configuration
 - Create SSH files from your 1Password keys
 
-### 3. First-Time Setup
+### 4. First-Time Setup
 
 On first run, you'll be prompted to:
 
 - Sign in to 1Password (email and account UUID)
 - Provide your Git name and email (if different from 1Password email)
 
-### 4. Manual Steps
+### 5. Manual Steps
 
 After the automated setup, you may want to:
 
