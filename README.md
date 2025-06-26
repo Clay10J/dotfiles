@@ -72,11 +72,31 @@ If you are not signed in, the bootstrap script will exit with an error.
 
 **Before running the bootstrap script**, you need to create SSH keys in 1Password:
 
-1. **Open 1Password**
-2. **Create a new SSH Key item** in your Personal vault
-3. **Title it**: `[hostname] SSH Key` (e.g., "commander SSH Key")
-4. **Generate a new SSH key pair** using 1Password's built-in generator
-5. **Copy the public key** and add it to GitHub/GitLab/etc.
+1. **Sign in to 1Password CLI** (if not already signed in):
+
+   ```sh
+   eval $(op signin)
+   ```
+
+2. **Create a new SSH Key item** in your Personal vault:
+
+   ```sh
+   op item create --vault Personal --category "SSH Key" --title "[hostname] SSH Key"
+   ```
+
+   Replace `[hostname]` with your actual hostname (e.g., "commander SSH Key").
+
+3. **Generate a new SSH key pair** using 1Password's built-in generator:
+
+   ```sh
+   op item edit "[hostname] SSH Key" --generate-password
+   ```
+
+4. **Copy the public key** and add it to GitHub/GitLab/etc.:
+
+   ```sh
+   op item get "[hostname] SSH Key" --fields public_key
+   ```
 
 ### 3. Bootstrap Installation
 
