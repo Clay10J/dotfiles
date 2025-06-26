@@ -87,6 +87,8 @@ If you are not signed in, the bootstrap script will exit with an error.
    op item get "[hostname] SSH Key" --fields public_key
    ```
 
+**Note:** This setup uses the 1Password SSH agent, which serves SSH keys directly from your vault without storing private keys on disk. The SSH agent will be automatically configured during the bootstrap process.
+
 ### 3. Bootstrap Installation
 
 **Prerequisite**: Ensure `curl` is installed on your system. On most Linux distributions, it's available by default, but if not:
@@ -103,7 +105,7 @@ curl -fsSL https://raw.githubusercontent.com/Clay10J/dotfiles/main/bootstrap.sh 
 
 This will:
 
-- Install essential tools (git, curl, gpg)
+- Install essential tools (git, gpg)
 - Install chezmoi
 - Initialize and apply the dotfiles configuration
 - Create SSH files from your 1Password keys
@@ -239,6 +241,7 @@ This setup follows a clean architecture:
 - `run_once_setup_shell.sh` - Set zsh as default
 - `run_once_install_fonts.sh` - Font installation
 - `run_once_install_zsh_plugins.sh` - Zsh plugin installation
+- `run_once_setup_ssh_agent.sh` - Configure 1Password SSH agent
 
 ## Customization
 
@@ -251,3 +254,24 @@ Edit `home/.chezmoidata/packages.yaml` to add/remove packages.
 - Shell config: `home/dot_zshrc.tmpl`
 - Git config: `home/dot_gitconfig.tmpl`
 - Starship config: `home/dot_config/starship.toml.tmpl`
+
+### Customizing Your Git Identity
+
+By default, chezmoi uses values from `home/.chezmoidata/chezmoi.yaml` for your Git name and email:
+
+```yaml
+git_name: "Your Name"
+git_email: "your@email.com"
+```
+
+- `git_name` should be your real name or the name you want to appear in your Git commit history.
+- `git_email` should be the email address you use for your Git hosting account (e.g., GitHub, GitLab).
+
+To override these for a specific machine, create a file named `home/.chezmoidata/chezmoi.<hostname>.yaml` (replace `<hostname>` with the output of `hostname` on that machine):
+
+```yaml
+git_name: "Work Laptop Name"
+git_email: "work@email.com"
+```
+
+Chezmoi will automatically use the host-specific values if they exist.

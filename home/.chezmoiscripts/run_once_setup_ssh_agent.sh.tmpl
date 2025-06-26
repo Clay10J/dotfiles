@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This script sets up the 1Password SSH agent and adds the host-specific SSH key.
+# It's a 'run_once' script because the SSH agent configuration should only be set up once.
+
+# —————— COLORS & LOGGING ——————
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+log_info() { echo -e "\n${BLUE}ℹ️  $1${NC}"; }
+log_success() { echo -e "${GREEN}✅ $1${NC}"; }
+
+# —————— SCRIPT LOGIC ——————
+main() {
+    log_info "Setting up 1Password SSH agent..."
+
+    # Check if 1Password CLI is available
+    if ! command -v op >/dev/null 2>&1; then
+        echo "Error: 1Password CLI (op) not found. Please install it first."
+        exit 1
+    fi
+
+    # Check if signed in to 1Password
+    if ! op account get >/dev/null 2>&1; then
+        echo "Error: Not signed in to 1Password CLI. Please run: eval \$(op signin)"
+        exit 1
+    fi
+
+    # Get hostname for SSH key
+    HOSTNAME=$(hostname)
+    SSH_KEY_TITLE="${HOSTNAME} SSH Key"
+
+    log_info "Setting up SSH agent for key: $SSH_KEY_TITLE"
+
+    # Add the SSH key to the 1Password SSH agent
+    if op ssh add "$SSH_KEY_TITLE" >/dev/null 2>&1; then
+        log_success "SSH key '$SSH_KEY_TITLE' added to 1Password SSH agent"
+    else
+        echo "Warning: Could not add SSH key '$SSH_KEY_TITLE' to agent. It may not exist in 1Password."
+        echo "Please ensure you have created the SSH key in 1Password before running this script."
+        exit 1
+    fi
+
+    # Start the SSH agent (this will be sourced by the shell)
+    log_info "Starting 1Password SSH agent..."
+    eval $(op ssh)
+
+    log_success "1Password SSH agent setup complete!"
+    log_info "The SSH agent is now running and will serve keys from your 1Password vault."
+    log_info "You can add more keys with: op ssh add 'Key Name'"
+}
+
+main "$@" 
