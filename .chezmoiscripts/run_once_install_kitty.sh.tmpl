@@ -7,9 +7,6 @@ if [[ "{{ .headless }}" == "true" ]]; then
     exit 0
 fi
 
-# Install Kitty Terminal using official installer
-# This script follows the official kitty installation documentation
-
 # Check if kitty is already installed
 if command -v kitty >/dev/null 2>&1; then
     echo "Kitty is already installed"
@@ -22,18 +19,62 @@ curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
 
 # Create symbolic links to add kitty and kitten to PATH
 echo "Creating symbolic links..."
+mkdir -p ~/.local/bin
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 
 # Desktop integration (following official docs)
 echo "Setting up desktop integration..."
-# Place the kitty.desktop file
-cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
+mkdir -p ~/.local/share/applications
+
+# Check if the kitty.desktop file exists in the expected location
+KITTY_DESKTOP_SOURCE=""
+if [[ -f ~/.local/kitty.app/share/applications/kitty.desktop ]]; then
+    KITTY_DESKTOP_SOURCE=~/.local/kitty.app/share/applications/kitty.desktop
+elif [[ -f /usr/share/applications/kitty.desktop ]]; then
+    KITTY_DESKTOP_SOURCE=/usr/share/applications/kitty.desktop
+else
+    echo "Warning: Could not find kitty.desktop file. Creating a basic one..."
+    cat > ~/.local/share/applications/kitty.desktop << 'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Kitty
+GenericName=Terminal
+Comment=Fast, feature-rich, GPU based terminal emulator
+Exec=kitty
+Icon=kitty
+Terminal=false
+Categories=System;TerminalEmulator;
+EOF
+    KITTY_DESKTOP_SOURCE=~/.local/share/applications/kitty.desktop
+fi
+
+# Copy the desktop file if we found one
+if [[ -n "$KITTY_DESKTOP_SOURCE" && "$KITTY_DESKTOP_SOURCE" != ~/.local/share/applications/kitty.desktop ]]; then
+    cp "$KITTY_DESKTOP_SOURCE" ~/.local/share/applications/
+fi
 
 # Update the paths to kitty and its icon in the desktop file
-sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty.desktop
-sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty.desktop
+# Only modify if the file exists and we can find the actual paths
+if [[ -f ~/.local/share/applications/kitty.desktop ]]; then
+    KITTY_BIN="$(readlink -f ~/.local/kitty.app/bin/kitty)"
+    KITTY_ICON="$(readlink -f ~/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png)"
+    
+    if [[ -f "$KITTY_BIN" ]]; then
+        echo "Updating kitty executable path in desktop file..."
+        sed -i "s|Exec=kitty|Exec=$KITTY_BIN|g" ~/.local/share/applications/kitty.desktop
+    fi
+    
+    if [[ -f "$KITTY_ICON" ]]; then
+        echo "Updating kitty icon path in desktop file..."
+        sed -i "s|Icon=kitty|Icon=$KITTY_ICON|g" ~/.local/share/applications/kitty.desktop
+    fi
+else
+    echo "Warning: Could not create or modify kitty.desktop file"
+fi
 
 # Make xdg-terminal-exec use kitty
+mkdir -p ~/.config
 echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 
 echo "Kitty Terminal installed successfully with desktop integration" 
