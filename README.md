@@ -15,7 +15,7 @@ A robust, automated dotfiles setup for Linux using `chezmoi`. This setup provide
 
 ### 1. 1Password CLI Installation
 
-You must install and sign in to the 1Password CLI before running the bootstrap script. Follow the instructions for your platform:
+You must install the 1Password CLI before running the bootstrap script. Follow the instructions for your platform:
 
 ### Debian/Ubuntu
 
@@ -60,7 +60,9 @@ brew install --cask 1password/tap/1password-cli
 winget install --id=AgileBits.1Password.CLI
 ```
 
-After installing, add your 1Password account and sign in:
+---
+
+**After installing the 1Password CLI, you must add your account and sign in (all platforms):**
 
 ```sh
 op account add
