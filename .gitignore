@@ -1,6 +1,14 @@
-# Ignore data except packages.yaml
+# Ignore all data files by default
 .chezmoidata/*
+
+# Allow committed host override files (non-sensitive)
+!.chezmoidata/chezmoi.*.yaml
+
+# Allow packages.yaml
 !.chezmoidata/packages.yaml
+
+# Ignore any private host files
+.chezmoidata/*.private.yaml
 
 # Ignore scripts except templates
 .chezmoiscripts/*

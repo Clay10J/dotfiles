@@ -277,3 +277,31 @@ git_email: "work@email.com"
 ```
 
 Chezmoi will automatically use the host-specific values if they exist.
+
+## Host-Specific Overrides and Data Files
+
+Chezmoi supports host-specific configuration using files like `.chezmoidata/chezmoi.<hostname>.yaml`. These files allow you to set variables (e.g., `headless: true`, `work: false`) that are only used on a specific machine.
+
+### Should you commit host override files?
+
+- **If they only contain non-sensitive, non-secret config:** Yes, commit them. This enables fully automated bootstrapping on new machines.
+- **If they contain secrets or private data:** Do NOT commit them. Add them to `.gitignore`.
+
+### How it works
+
+- When you run the bootstrap script, chezmoi will automatically use the file matching the current hostname (e.g., `.chezmoidata/chezmoi.dot-VirtualBox.yaml`).
+- This allows you to have per-host settings without manual intervention.
+
+### Example
+
+```yaml
+# .chezmoidata/chezmoi.dot-VirtualBox.yaml
+headless: true
+work: false
+```
+
+### Best Practices
+
+- Only commit host files if they do not contain secrets.
+- For secrets, use a separate `.private.yaml` file and add it to `.gitignore`.
+- Document your approach in the README for clarity.
