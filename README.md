@@ -60,9 +60,10 @@ brew install --cask 1password/tap/1password-cli
 winget install --id=AgileBits.1Password.CLI
 ```
 
-After installing, sign in to 1Password CLI:
+After installing, add your 1Password account and sign in:
 
 ```sh
+op account add
 eval $(op signin)
 ```
 
@@ -70,15 +71,9 @@ If you are not signed in, the bootstrap script will exit with an error.
 
 ### 2. SSH Key Setup
 
-**Before running the bootstrap script**, you need to create SSH keys in 1Password:
+**After signing in to 1Password CLI**, create SSH keys in 1Password:
 
-1. **Sign in to 1Password CLI** (if not already signed in):
-
-   ```sh
-   eval $(op signin)
-   ```
-
-2. **Create a new SSH Key item** in your Personal vault:
+1. **Create a new SSH Key item** in your Personal vault:
 
    ```sh
    op item create --vault Personal --category "SSH Key" --title "[hostname] SSH Key"
@@ -86,13 +81,7 @@ If you are not signed in, the bootstrap script will exit with an error.
 
    Replace `[hostname]` with your actual hostname (e.g., "commander SSH Key").
 
-3. **Generate a new SSH key pair** using 1Password's built-in generator:
-
-   ```sh
-   op item edit "[hostname] SSH Key" --generate-password
-   ```
-
-4. **Copy the public key** and add it to GitHub/GitLab/etc.:
+2. **Copy the public key** and add it to GitHub/GitLab/etc.:
 
    ```sh
    op item get "[hostname] SSH Key" --fields public_key
@@ -133,14 +122,6 @@ Since Cursor doesn't have a public package, install it manually:
    - MapleMono NF
    - CaskaydiaCove Nerd Font
    - Iosevka Nerd Font
-
-#### Set Default Shell
-
-If zsh isn't your default shell after setup:
-
-```bash
-chsh -s /bin/zsh
-```
 
 #### Configure Terminal Font
 
