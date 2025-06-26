@@ -119,14 +119,7 @@ This will:
 - Initialize and apply the dotfiles configuration
 - Create SSH files from your 1Password keys
 
-### 4. First-Time Setup
-
-On first run, you'll be prompted to:
-
-- Sign in to 1Password (email and account UUID)
-- Provide your Git name and email (if different from 1Password email)
-
-### 5. Manual Steps
+### 4. Manual Steps
 
 After the automated setup, you may want to:
 
@@ -174,11 +167,12 @@ In your terminal preferences, set the font to one of:
 ### GUI Applications (non-headless only)
 
 - **Brave Browser** - Privacy-focused browser
+- **1Password** - Password manager GUI
 
 ### External Tools
 
 - **uv** - Fast Python package manager by Astral
-- **1Password CLI** - Password and secret management
+- **1Password CLI** - Password and secret management (manual installation)
 
 ### Fonts
 
@@ -259,7 +253,6 @@ This setup follows a clean architecture:
 
 ### Scripts (run once)
 
-- `run_once_signin_1password.sh` - 1Password authentication
 - `run_once_install_packages.sh` - Package installation
 - `run_once_install_uv.sh` - UV installation
 - `run_once_setup_shell.sh` - Set zsh as default
@@ -276,4 +269,4 @@ Edit `home/.chezmoidata/packages.yaml` to add/remove packages.
 
 - Shell config: `home/dot_zshrc.tmpl`
 - Git config: `home/dot_gitconfig.tmpl`
-- Starship config: `
+- Starship config: `home/dot_config/starship.toml.tmpl`
