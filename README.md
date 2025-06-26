@@ -89,7 +89,7 @@ If you are not signed in, the bootstrap script will exit with an error.
    op item get "[hostname] SSH Key" --fields public_key
    ```
 
-**Note:** This setup uses the 1Password SSH agent, which serves SSH keys directly from your vault without storing private keys on disk. The SSH agent will be automatically configured during the bootstrap process.
+**Note:** This setup uses file-based SSH keys. Your SSH private and public keys are securely fetched from 1Password using chezmoi templates and written to `~/.ssh/id_ed25519` and `~/.ssh/id_ed25519.pub`. The standard SSH agent is used for authentication.
 
 ### 3. Bootstrap Installation
 
