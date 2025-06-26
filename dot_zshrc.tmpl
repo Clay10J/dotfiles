@@ -16,12 +16,6 @@ eval "$(starship init zsh)"
 # —————— ZOXIDE (SMART CD) ——————
 eval "$(zoxide init zsh)"
 
-# —————— 1PASSWORD SSH AGENT ——————
-# Start 1Password SSH agent if available and not already running
-if command -v op >/dev/null 2>&1 && [ ! -S ~/.1password/agent.sock ]; then
-    eval $(op ssh) 2>/dev/null || true
-fi
-
 # —————— FZF CONFIGURATION ——————
 # Use fd instead of find for better performance
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
