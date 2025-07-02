@@ -76,6 +76,12 @@ alias md='mkdir -p'
 alias rd='rmdir'
 
 # —————— GIT ALIASES (from Oh My Zsh) ——————
+
+# Helper to get the current git branch
+git_current_branch() {
+  git rev-parse --abbrev-ref HEAD 2>/dev/null
+}
+
 alias g='git'
 alias ga='git add'
 alias gaa='git add --all'
