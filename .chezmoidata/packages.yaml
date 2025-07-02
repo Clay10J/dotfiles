@@ -3,31 +3,32 @@
 
 # Core utilities (apt packages)
 core:
+  - bat
   - fd-find
   - fzf
   - htop
+  - jq
   - ripgrep
-  - bat
-  - zsh
   - tree
-  - zoxide
   - unzip
   - vim
+  - zoxide
+  - zsh
 
 # GUI applications (from added repositories)
 gui:
-  - brave-browser
   - 1password
+  - brave-browser
 
 # Additional repositories to add
 repositories:
-  - name: "Brave Browser"
-    key_url: "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
-    repo_url: "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
-    keyring_path: "/usr/share/keyrings/brave-browser-archive-keyring.gpg"
-    list_path: "/etc/apt/sources.list.d/brave-browser-release.list"
   - name: "1Password"
     key_url: "https://downloads.1password.com/linux/keys/1password.asc"
     repo_url: "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main"
     keyring_path: "/usr/share/keyrings/1password-archive-keyring.gpg"
     list_path: "/etc/apt/sources.list.d/1password.list"
+  - name: "Brave Browser"
+    key_url: "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
+    repo_url: "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
+    keyring_path: "/usr/share/keyrings/brave-browser-archive-keyring.gpg"
+    list_path: "/etc/apt/sources.list.d/brave-browser-release.list"
