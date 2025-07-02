@@ -82,6 +82,10 @@ git_current_branch() {
   git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
+# Git pull/push current branch (Oh My Zsh style)
+ggpull() { git pull origin "$(git_current_branch)"; }
+ggpush() { git push origin "$(git_current_branch)"; }
+
 alias g='git'
 alias ga='git add'
 alias gaa='git add --all'
@@ -137,8 +141,6 @@ alias gstp='git stash pop'
 alias gsw='git switch'
 alias gswc='git switch -c'
 alias gup='git pull --rebase'
-alias ggpull='git pull origin $(git_current_branch)'
-alias ggpush='git push origin $(git_current_branch)'
 
 # —————— ENVIRONMENT VARIABLES ——————
 export EDITOR='cursor'
