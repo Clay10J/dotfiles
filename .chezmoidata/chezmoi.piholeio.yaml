@@ -1,0 +1,7 @@
+# Pi-hole server host configuration
+
+headless: true
+sshAgent: false
+sshUser: "clay"
+sshHostName: "piholeio.local"
+terminalType: "xterm-256color"

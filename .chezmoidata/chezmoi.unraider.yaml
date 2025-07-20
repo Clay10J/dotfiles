@@ -1,0 +1,8 @@
+# Unraid server host configuration
+
+headless: false
+work: false
+sshAgent: false
+sshUser: "root"
+sshHostName: "unraider.local"
+terminalType: "xterm-256color"
