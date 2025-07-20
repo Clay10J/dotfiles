@@ -8,44 +8,42 @@ Host *
     ServerAliveInterval 60
     ServerAliveCountMax 3
     AddKeysToAgent yes
-    IdentitiesOnly yes
+    # IdentitiesOnly yes  # Removed: conflicts with 1Password SSH agent - prevents agent from offering keys
     IdentityAgent ~/.1password/agent.sock
 
 # GitHub
 Host github.com
     HostName github.com
     User git
-    IdentitiesOnly yes
+    # IdentitiesOnly yes  # Removed: conflicts with 1Password SSH agent
 
 # GitLab (uncomment if you use GitLab)
 # Host gitlab.com
 #     HostName gitlab.com
 #     User git
-#     IdentitiesOnly yes
 
 # Pi-hole server
 Host piholeio
     HostName {{ .servers.piholeio.sshHostName }}
     User {{ .servers.piholeio.sshUser }}
-    IdentitiesOnly yes
+    # IdentitiesOnly yes  # Removed: conflicts with 1Password SSH agent
 
 # Unraid server
 Host unraider
     HostName {{ .servers.unraider.sshHostName }}
     User {{ .servers.unraider.sshUser }}
-    IdentitiesOnly yes
+    # IdentitiesOnly yes  # Removed: conflicts with 1Password SSH agent
 
-# Development servers
-Host dev-*
-    IdentitiesOnly yes
+# Development servers (uncomment and customize as needed)
+# Host dev-*
+#     # IdentitiesOnly yes  # Removed: conflicts with 1Password SSH agent
 
-# Production servers
-Host prod-*
-    IdentitiesOnly yes
-    ServerAliveInterval 30
-    ServerAliveCountMax 6
+# Production servers (uncomment and customize as needed)
+# Host prod-*
+#     ServerAliveInterval 30
+#     ServerAliveCountMax 6
+#     # IdentitiesOnly yes  # Removed: conflicts with 1Password SSH agent
 
 # Local development (uncomment if you SSH to localhost)
 # Host localhost
-#     IdentitiesOnly yes
 {{ end }} 
