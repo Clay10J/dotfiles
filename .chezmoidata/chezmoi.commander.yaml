@@ -1,2 +1,3 @@
 headless: false
 work: false
+sshAgent: true

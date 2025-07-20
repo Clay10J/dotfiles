@@ -1,0 +1,5 @@
+# Ignore SSH private key templates - these are managed by 1Password
+dot_ssh/id_*.tmpl
+
+# Ignore private host data files with sensitive information
+.chezmoidata/*.private.yaml 

@@ -89,7 +89,7 @@ If you are not signed in, the bootstrap script will exit with an error.
    op item get "[hostname] SSH Key" --fields public_key
    ```
 
-**Note:** This setup uses file-based SSH keys. Your SSH private and public keys are securely fetched from 1Password using chezmoi templates and written to `~/.ssh/id_ed25519` and `~/.ssh/id_ed25519.pub`. The standard SSH agent is used for authentication.
+**Note:** This setup uses 1Password SSH agent integration. SSH keys are stored securely in 1Password and served via the SSH agent at `~/.1password/agent.sock`. No SSH key files are stored on disk.
 
 ### 3. Bootstrap Installation
 
@@ -120,8 +120,10 @@ After the automated setup, you may want to:
 
 Since Cursor doesn't have a public package, install it manually:
 
-1. Download from [cursor.sh](https://cursor.sh)
-2. Install the `.deb` package
+1. **For automated installation with auto-updates**: Follow the [complete Cursor installation guide](CURSOR_INSTALL.md) which includes cleanup, installation, and systemd-based auto-updates.
+
+2. **For manual installation**: Download from [cursor.sh](https://cursor.sh) and install the `.deb` package.
+
 3. Update your terminal preferences to use one of the installed fonts:
    - MapleMono NF
    - CaskaydiaCove Nerd Font
@@ -305,3 +307,39 @@ work: false
 - Only commit host files if they do not contain secrets.
 - For secrets, use a separate `.private.yaml` file and add it to `.gitignore`.
 - Document your approach in the README for clarity.
+
+## SSH Configuration
+
+### Host Profiles
+
+The setup uses different profiles for different types of hosts:
+
+- **Client workstations** (`sshAgent: true`): Get SSH config with 1Password agent integration
+- **Servers** (`sshAgent: false`): No SSH config, just terminal settings
+
+### SSH Agent Integration
+
+Client workstations automatically configure:
+
+- SSH agent using 1Password (`~/.1password/agent.sock`)
+- SSH config with host-specific entries
+- Environment variable `SSH_AUTH_SOCK`
+
+### Host-Specific SSH Configuration
+
+Each host can define:
+
+- `sshAgent`: Whether to use SSH agent (true for workstations, false for servers)
+- `sshUser`: SSH username for the host
+- `sshHostName`: Hostname or IP for SSH connection
+- `terminalType`: Terminal type for proper key mapping
+
+## DNS Configuration
+
+Add local DNS entries through Pi-hole admin → Local DNS → DNS Records.
+
+> **Note**: When adding new hosts to your SSH configuration, remember to add their hostnames to Pi-hole DNS as well.
+
+Reference: [Pi-hole Local DNS Documentation](https://docs.pi-hole.net/guides/dns/unbound/)
+
+> **Note**: If you set up a reverse proxy, you may need to change the SSH hostname in `.chezmoidata/chezmoi.pihole.yaml` to avoid conflicts between web and SSH traffic.

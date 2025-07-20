@@ -1,44 +1,51 @@
+{{ if .host.sshAgent }}
 # SSH Configuration
 # This file is managed by chezmoi
+# Only rendered on hosts with sshAgent = true (client workstations)
 
-# Global settings
+# Global settings with 1Password SSH agent
 Host *
     ServerAliveInterval 60
     ServerAliveCountMax 3
     AddKeysToAgent yes
     IdentitiesOnly yes
-    IdentityFile ~/.ssh/id_ed25519
+    IdentityAgent ~/.1password/agent.sock
 
 # GitHub
 Host github.com
     HostName github.com
     User git
-    IdentityFile ~/.ssh/id_ed25519
     IdentitiesOnly yes
 
 # GitLab (uncomment if you use GitLab)
 # Host gitlab.com
 #     HostName gitlab.com
 #     User git
-#     IdentityFile ~/.ssh/id_ed25519
 #     IdentitiesOnly yes
 
-# Development servers (uncomment and customize for your dev servers)
-# Host dev-*
-#     User {{ .chezmoi.username }}
-#     IdentityFile ~/.ssh/id_ed25519
-#     IdentitiesOnly yes
+# Pi-hole server
+Host piholeio
+    HostName {{ .host.sshHostName }}
+    User {{ .host.sshUser }}
+    IdentitiesOnly yes
 
-# Production servers (uncomment and customize for your prod servers)
-# Host prod-*
-#     User {{ .chezmoi.username }}
-#     IdentityFile ~/.ssh/id_ed25519
-#     IdentitiesOnly yes
-#     ServerAliveInterval 30
-#     ServerAliveCountMax 6
+# Unraid server
+Host unraider
+    HostName {{ .host.sshHostName }}
+    User {{ .host.sshUser }}
+    IdentitiesOnly yes
+
+# Development servers
+Host dev-*
+    IdentitiesOnly yes
+
+# Production servers
+Host prod-*
+    IdentitiesOnly yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 6
 
 # Local development (uncomment if you SSH to localhost)
 # Host localhost
-#     User {{ .chezmoi.username }}
-#     IdentityFile ~/.ssh/id_ed25519
-#     IdentitiesOnly yes 
+#     IdentitiesOnly yes
+{{ end }} 

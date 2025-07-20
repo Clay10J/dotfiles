@@ -34,14 +34,13 @@ alias ls='ls --color=auto'
 alias ll='ls -la'
 alias la='ls -A'
 
-# Use bat instead of cat (batcat on Ubuntu/Debian)
-alias cat='batcat'
+# Use bat for syntax highlighting (alias only on Debian-based systems)
+{{ if contains .chezmoi.osRelease.idLike "debian" }}
+if command -v batcat >/dev/null 2>&1; then
+    alias bat='batcat'
+fi
+{{ end }}
 
-# Use ripgrep instead of grep
-alias grep='rg'
-
-# Use fd instead of find
-alias find='fd'
 
 # —————— USEFUL ALIASES ——————
 # Navigation
@@ -143,8 +142,21 @@ alias gswc='git switch -c'
 alias gup='git pull --rebase'
 
 # —————— ENVIRONMENT VARIABLES ——————
-export EDITOR='cursor'
-export VISUAL='cursor'
+# Use vim as default editor for system tools, Cursor for specific tasks
+export EDITOR='vim'
+export VISUAL='vim'
+
+# —————— SSH AGENT CONFIGURATION ——————
+{{ if .host.sshAgent }}
+# Configure SSH agent to use 1Password
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+{{ end }}
+
+# —————— TERMINAL CONFIGURATION ——————
+{{ if .host.terminalType }}
+# Set terminal type for proper key mapping
+export TERM="{{ .host.terminalType }}"
+{{ end }}
 
 # —————— PATH ADDITIONS ——————
 # Add local bin to PATH
