@@ -81,9 +81,11 @@ git_current_branch() {
   git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
-# Git pull/push current branch (Oh My Zsh style)
-ggpull() { git pull origin "$(git_current_branch)"; }
-ggpush() { git push origin "$(git_current_branch)"; }
+# Convenience functions (auto-detect current branch)
+ggl() { git pull origin "$(git_current_branch)"; }
+ggp() { git push origin "$(git_current_branch)"; }
+ggpf() { git push --force-with-lease origin "$(git_current_branch)"; }
+ggpf!() { git push --force origin "$(git_current_branch)"; }
 
 alias g='git'
 alias ga='git add'
