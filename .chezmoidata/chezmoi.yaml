@@ -1,2 +1,12 @@
+# Global settings for all hosts
 git_name: "Clay"
 git_email: "22086754+Clay10J@users.noreply.github.com"
+
+# Server connection data (available to all hosts)
+servers:
+  piholeio:
+    sshHostName: "piholeio.local"
+    sshUser: "clay"
+  unraider:
+    sshHostName: "unraider.local"
+    sshUser: "root"

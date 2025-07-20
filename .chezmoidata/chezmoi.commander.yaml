@@ -1,3 +1,2 @@
-headless: false
-work: false
+# Commander-specific settings
 sshAgent: true

@@ -147,15 +147,15 @@ export EDITOR='vim'
 export VISUAL='vim'
 
 # —————— SSH AGENT CONFIGURATION ——————
-{{ if .host.sshAgent }}
+{{ if .sshAgent }}
 # Configure SSH agent to use 1Password
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 {{ end }}
 
 # —————— TERMINAL CONFIGURATION ——————
-{{ if .host.terminalType }}
+{{ if .terminalType }}
 # Set terminal type for proper key mapping
-export TERM="{{ .host.terminalType }}"
+export TERM="{{ .terminalType }}"
 {{ end }}
 
 # —————— PATH ADDITIONS ——————

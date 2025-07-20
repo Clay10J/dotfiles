@@ -89,6 +89,16 @@ If you are not signed in, the bootstrap script will exit with an error.
    op item get "[hostname] SSH Key" --fields public_key
    ```
 
+3. **Add the public key to servers** for SSH access:
+
+   ```sh
+   # Get the public key
+   op item get "[hostname] SSH Key" --fields public_key
+
+   # Add to server's authorized_keys (replace with your server details)
+   ssh user@server "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... user@hostname' >> ~/.ssh/authorized_keys"
+   ```
+
 **Note:** This setup uses 1Password SSH agent integration. SSH keys are stored securely in 1Password and served via the SSH agent at `~/.1password/agent.sock`. No SSH key files are stored on disk.
 
 ### 3. Bootstrap Installation

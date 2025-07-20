@@ -1,4 +1,4 @@
-{{ if .host.sshAgent }}
+{{ if .sshAgent }}
 # SSH Configuration
 # This file is managed by chezmoi
 # Only rendered on hosts with sshAgent = true (client workstations)
@@ -25,14 +25,14 @@ Host github.com
 
 # Pi-hole server
 Host piholeio
-    HostName {{ .host.sshHostName }}
-    User {{ .host.sshUser }}
+    HostName {{ .servers.piholeio.sshHostName }}
+    User {{ .servers.piholeio.sshUser }}
     IdentitiesOnly yes
 
 # Unraid server
 Host unraider
-    HostName {{ .host.sshHostName }}
-    User {{ .host.sshUser }}
+    HostName {{ .servers.unraider.sshHostName }}
+    User {{ .servers.unraider.sshUser }}
     IdentitiesOnly yes
 
 # Development servers

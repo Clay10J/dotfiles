@@ -1,8 +1,5 @@
-# Unraid server host configuration
-
-headless: false
-work: false
-sshAgent: false
-sshUser: "root"
-sshHostName: "unraider.local"
+# Unraid server settings
+# Considered headless because Unraid uses a custom Linux-based OS
+# with a web-based GUI rather than traditional desktop environment
+headless: true
 terminalType: "xterm-256color"
