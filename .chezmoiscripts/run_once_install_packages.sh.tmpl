@@ -16,15 +16,23 @@ log_warning() { echo -e "${YELLOW}⚠️  $1${NC}"; }
 log_error() { echo -e "${RED}❌ $1${NC}"; }
 
 # —————— PACKAGE LISTS (from chezmoi template) ——————
+{{ if eq .chezmoi.kernel.osrelease "debian" }}
+# Debian/Ubuntu packages
 CORE_PACKAGES=(
-{{ range .core }}
+{{ range .core.common }}
+    "{{ . }}"
+{{ end }}
+{{ range .core.debian }}
     "{{ . }}"
 {{ end }}
 )
 
 {{ if not .headless }}
 GUI_PACKAGES=(
-{{ range .gui }}
+{{ range .gui.common }}
+    "{{ . }}"
+{{ end }}
+{{ range .gui.debian }}
     "{{ . }}"
 {{ end }}
 )
@@ -39,9 +47,43 @@ REPO_{{ .name | replace " " "_" | upper }}_KEYRING_PATH="{{ .keyring_path }}"
 REPO_{{ .name | replace " " "_" | upper }}_LIST_PATH="{{ .list_path }}"
 {{ end }}
 
+{{ else if eq .chezmoi.kernel.osrelease "arch" }}
+# Arch Linux packages
+CORE_PACKAGES=(
+{{ range .core.common }}
+    "{{ . }}"
+{{ end }}
+{{ range .core.arch }}
+    "{{ . }}"
+{{ end }}
+)
+
+{{ if not .headless }}
+GUI_PACKAGES=(
+{{ range .gui.common }}
+    "{{ . }}"
+{{ end }}
+{{ range .gui.arch }}
+    "{{ . }}"
+{{ end }}
+)
+{{ end }}
+
+# AUR packages (optional)
+AUR_PACKAGES=(
+{{ range .aur }}
+    "{{ . }}"
+{{ end }}
+)
+{{ end }}
+
 # —————— SCRIPT LOGIC ——————
 main() {
     log_info "Installing packages..."
+
+{{ if eq .chezmoi.kernel.osrelease "debian" }}
+    # Debian/Ubuntu installation
+    log_info "Detected Debian/Ubuntu system, using apt..."
 
     # Add repositories first
     log_info "Adding external repositories..."
@@ -88,6 +130,79 @@ main() {
     fi
 {{ else }}
     log_info "Skipping GUI packages (headless machine)"
+{{ end }}
+
+{{ else if eq .chezmoi.kernel.osrelease "arch" }}
+    # Arch Linux installation
+    log_info "Detected Arch Linux system, using pacman..."
+
+    # Update package database
+    log_info "Updating package database..."
+    sudo pacman -Sy --noconfirm
+
+    # Install core packages
+    if [[ ${#CORE_PACKAGES[@]} -gt 0 ]]; then
+        log_info "Installing core packages..."
+        sudo pacman -S --noconfirm "${CORE_PACKAGES[@]}"
+        log_success "Core packages installed: ${CORE_PACKAGES[*]}"
+    fi
+
+    # Install GUI packages (only if not headless)
+{{ if not .headless }}
+    if [[ ${#GUI_PACKAGES[@]} -gt 0 ]]; then
+        log_info "Installing GUI packages..."
+        # Install 1Password and Brave Browser from AUR if available
+        for package in "${GUI_PACKAGES[@]}"; do
+            case "$package" in
+                "1password")
+                    log_info "Installing 1Password desktop app..."
+                    if command -v paru >/dev/null 2>&1; then
+                        paru -S --noconfirm 1password
+                    elif command -v yay >/dev/null 2>&1; then
+                        yay -S --noconfirm 1password
+                    else
+                        log_warning "No AUR helper found, skipping 1Password desktop app"
+                    fi
+                    ;;
+                "brave-browser")
+                    log_info "Installing Brave Browser..."
+                    if command -v paru >/dev/null 2>&1; then
+                        paru -S --noconfirm brave-browser
+                    elif command -v yay >/dev/null 2>&1; then
+                        yay -S --noconfirm brave-browser
+                    else
+                        log_warning "No AUR helper found, skipping Brave Browser"
+                    fi
+                    ;;
+                *)
+                    # Install other packages with pacman
+                    sudo pacman -S --noconfirm "$package"
+                    ;;
+            esac
+        done
+        log_success "GUI packages installed"
+    fi
+{{ else }}
+    log_info "Skipping GUI packages (headless machine)"
+{{ end }}
+
+    # Install AUR packages if any (requires paru or yay)
+    if [[ ${#AUR_PACKAGES[@]} -gt 0 ]]; then
+        log_info "Installing AUR packages..."
+        if command -v paru >/dev/null 2>&1; then
+            paru -S --noconfirm "${AUR_PACKAGES[@]}"
+            log_success "AUR packages installed: ${AUR_PACKAGES[*]}"
+        elif command -v yay >/dev/null 2>&1; then
+            yay -S --noconfirm "${AUR_PACKAGES[@]}"
+            log_success "AUR packages installed: ${AUR_PACKAGES[*]}"
+        else
+            log_warning "No AUR helper (paru/yay) found, skipping AUR packages"
+        fi
+    fi
+
+{{ else }}
+    log_error "Unsupported operating system: {{ .chezmoi.kernel.osrelease }}"
+    exit 1
 {{ end }}
 
     log_success "All packages installed successfully!"

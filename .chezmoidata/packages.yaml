@@ -1,26 +1,45 @@
 # Package definitions for automated installation
 # This file is read by the package installation script
 
-# Core utilities (apt packages)
+# Core utilities (common across all distributions)
 core:
-  - bat
-  - fd-find
-  - fzf
-  - htop
-  - jq
-  - ripgrep
-  - tree
-  - unzip
-  - vim
-  - zoxide
-  - zsh
+  common:
+    - bat
+    - fzf
+    - htop
+    - jq
+    - ripgrep
+    - tree
+    - unzip
+    - vim
+    - zoxide
+    - zsh
+  # OS-specific package name mappings (only specify differences)
+  debian:
+    - fd-find # fd-find on Debian, fd on Arch
+  arch:
+    - fd # fd on Arch, fd-find on Debian
 
-# GUI applications (from added repositories)
+# GUI applications (different installation methods per OS)
 gui:
-  - 1password
-  - brave-browser
+  debian:
+    - 1password
+    - brave-browser
+  arch:
+    - 1password
+    - brave-browser
 
-# Additional repositories to add
+# AUR packages (Arch Linux only)
+# Add packages that are only available in the AUR here
+aur:
+  []
+  # Examples:
+  # - spotify
+  # - visual-studio-code-bin
+  # - google-chrome
+  # - discord
+
+# Additional repositories to add (Debian/Ubuntu only)
 repositories:
   - name: "1Password"
     key_url: "https://downloads.1password.com/linux/keys/1password.asc"

@@ -5,11 +5,21 @@ A robust, automated dotfiles setup for Linux using `chezmoi`. This setup provide
 ## Features
 
 - **Automated setup** - One command bootstrap process
+- **Multi-distribution support** - Works on Debian/Ubuntu and Arch Linux
 - **Modern tools** - Starship prompt, zoxide, fzf, ripgrep, bat, fd
 - **Git integration** - Comprehensive Git aliases and configuration
 - **1Password integration** - Secure secret management
 - **Font management** - Automatic installation of programming fonts
 - **Zsh enhancements** - Syntax highlighting and autosuggestions
+
+## Supported Distributions
+
+This dotfiles setup supports the following Linux distributions:
+
+- **Debian/Ubuntu** - Uses `apt` package manager
+- **Arch Linux** - Uses `pacman` package manager (with optional AUR support via `paru` or `yay`)
+
+The setup automatically detects your distribution and uses the appropriate package manager and package names. Package lists are defined in `.chezmoidata/packages.yaml` with common packages shared across distributions and OS-specific mappings only for packages with different names.
 
 ## Quick Start
 
@@ -43,9 +53,19 @@ sudo dnf install 1password-cli
 ### Arch Linux
 
 ```sh
-yay -S 1password-cli
+# Install AUR helper first (if not already installed)
+sudo pacman -S paru
 # or
+sudo pacman -S yay
+
+# Then install 1Password CLI
 paru -S 1password-cli
+# or
+yay -S 1password-cli
+
+# Note: 1Password CLI and 1Password desktop app are different packages
+# - 1password-cli: Command line interface
+# - 1password: Desktop application
 ```
 
 ### macOS (Homebrew)

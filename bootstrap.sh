@@ -55,8 +55,17 @@ main() {
 
     # 1. Install basic tools needed for repository setup
     log_info "Installing basic tools (git, gpg)..."
-    sudo apt-get update -qq
-    sudo apt-get install -y -qq git gpg
+    if command -v pacman >/dev/null 2>&1; then
+        # Arch Linux
+        sudo pacman -Sy --noconfirm git gnupg
+    elif command -v apt-get >/dev/null 2>&1; then
+        # Debian/Ubuntu
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq git gpg
+    else
+        log_error "Unsupported package manager. Please install git and gpg manually."
+        exit 1
+    fi
     log_success "Basic tools installed."
 
     # 2. Install chezmoi
